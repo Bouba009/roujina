@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="purple">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROUJÎNA | روجينا</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chart.js & QRCode & html2pdf -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: 'var(--primary)', secondary: 'var(--secondary)' } } }
+        }
+    </script>
+    <style>
+        :root {
+            /* Default Purple Theme */
+            --primary: #8b5cf6; --secondary: #6d28d9; --bg: #f3f4f6;
+        }
+        [data-theme="red"] { --primary: #e11d48; --secondary: #be123c; }
+        [data-theme="orange"] { --primary: #f97316; --secondary: #c2410c; }
+        [data-theme="gold"] { --primary: #eab308; --secondary: #a16207; }
+        
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); transition: background 0.3s; overflow-x: hidden; }
+        [lang="fr"] body { font-family: 'Poppins', sans-serif; }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
+        .slide-up { animation: slideUp 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        /* Floating Buttons */
+        .fab { position: fixed; bottom: 20px; z-index: 50; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.3s; }
+        .fab:hover { transform: scale(1.1); }
+        .fab-whatsapp { right: 20px; background-color: #25D366; color: white; font-size: 30px; }
+        .fab-sewing { right: 90px; background-color: var(--primary); color: white; font-size: 25px; }
+        [dir="ltr"] .fab-whatsapp { left: 20px; right: auto; }
+        [dir="ltr"] .fab-sewing { left: 90px; right: auto; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        
+        /* Popup Notification */
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #10B981; color: white; padding: 15px 30px; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 1000; display: none; font-weight: bold; }
+        .toast-show { display: block !important; animation: dropDown 0.5s ease-out forwards; }
+        @keyframes dropDown { 0% { top: -50px; opacity: 0; } 100% { top: 20px; opacity: 1; } }
+
+        /* Categories Slider */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .category-circle { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); padding: 2px; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Notification Toast -->
+    <div id="toast"><i class="fas fa-check-circle mr-2"></i> <span id="toast-msg">تم إرسال طلبك بنجاح</span></div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div id="app">
+        <!-- ==================== CLIENT INTERFACE ==================== -->
+        <div id="client-view">
+            <!-- Header -->
+            <header class="bg-white shadow-md sticky top-0 z-40">
+                <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                    <button class="text-2xl text-primary" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+                    <h1 class="text-3xl font-bold text-primary tracking-widest cursor-pointer" onclick="navigate('home')">ROUJÎNA</h1>
+                    <div class="flex gap-4 items-center">
+                        <button class="text-xl" onclick="toggleLang()"><i class="fas fa-language"></i></button>
+                        <button class="text-xl relative"><i class="fas fa-shopping-cart"></i><span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span></button>
+                    </div>
+                </div>
+                <!-- Search Bar -->
+                <div class="bg-primary p-2">
+                    <div class="container mx-auto relative">
+                        <input type="text" placeholder="ابحث عن منتج..." class="w-full p-2 rounded-full px-4 outline-none">
+                        <i class="fas fa-search absolute left-6 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Sidebar Menu -->
+            <div id="sidebar" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+                <div class="bg-white w-64 h-full p-6 slide-up">
+                    <button class="text-right w-full text-2xl text-red-500" onclick="toggleMenu()"><i class="fas fa-times"></i></button>
+                    <ul class="mt-8 space-y-4 text-lg font-bold">
+                        <li><a href="#" class="hover:text-primary"><i class="fas fa-info-circle w-6"></i> من نحن</a></li>
+                        <li><a href="#" class="hover:text-primary"><i class="fas fa-shield-alt w-6"></i> سياسة الخصوصية</a></li>
+                        <li><a href="#" class="hover:text-primary"><i class="fas fa-truck w-6"></i> سياسة الشحن</a></li>
+                        <li><a href="#" class="hover:text-primary"><i class="fas fa-phone w-6"></i> اتصل بنا</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Home Page Content -->
+            <div id="page-home" class="page-section fade-in">
+                <!-- Banner Slider -->
+                <div class="w-full h-48 md:h-96 bg-gray-300 relative overflow-hidden flex items-center justify-center text-white text-2xl font-bold" style="background-image: url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                    <div class="relative z-10 text-center">
+                        <h2 class="text-4xl mb-2 slide-up">عروض روجينا الحصرية</h2>
+                        <p class="text-lg">تخفيضات تصل إلى 50%</p>
+                    </div>
+                </div>
+
+                <!-- Categories Slider -->
+                <div class="container mx-auto py-6 px-4">
+                    <div class="flex gap-4 overflow-x-auto hide-scroll pb-4" id="categories-container">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="container mx-auto px-4 pb-12">
+                    <h3 class="text-2xl font-bold mb-6 border-b-2 border-primary inline-block pb-2">المنتجات المميزة</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="products-container">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Sewing Page -->
+            <div id="page-sewing" class="page-section hidden fade-in bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1000&q=80');">
+                <div class="bg-white bg-opacity-95 min-h-screen p-6">
+                    <div class="container mx-auto max-w-lg">
+                        <button onclick="navigate('home')" class="text-primary mb-4"><i class="fas fa-arrow-right"></i> عودة</button>
+                        <h2 class="text-3xl font-bold text-center text-primary mb-6"><i class="fas fa-cut"></i> خياطة حسب طلبك</h2>
+                        <form id="sewing-form" class="space-y-4" onsubmit="submitSewingOrder(event)">
+                            <div>
+                                <label class="block mb-1 font-bold">رفع صورة التصميم</label>
+                                <input type="file" accept="image/*" class="w-full border p-2 rounded bg-gray-50" required>
+                            </div>
+                            <div>
+                                <label class="block mb-1 font-bold">وصف التفاصيل</label>
+                                <textarea class="w-full border p-2 rounded bg-gray-50" rows="3" required placeholder="مثال: أريد هذا الفستان باللون الأحمر مقاس M..."></textarea>
+                            </div>
+                            <input type="text" placeholder="الاسم الكامل" class="w-full border p-2 rounded bg-gray-50" required>
+                            <input type="tel" placeholder="رقم الهاتف" class="w-full border p-2 rounded bg-gray-50" required>
+                            <select class="w-full border p-2 rounded bg-gray-50" required>
+                                <option value="">اختر الولاية</option>
+                                <option value="09">09 - البليدة</option>
+                                <option value="16">16 - الجزائر</option>
+                            </select>
+                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-full font-bold text-lg hover:bg-secondary transition shadow-lg">تأكيد الطلب</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="bg-gray-900 text-white pt-10 pb-24 md:pb-10">
+                <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">ROUJÎNA</h3>
+                        <p class="text-gray-400">وجهتك الأولى للأناقة والتفصيل العصري.</p>
+                        <div class="flex gap-4 mt-4 text-2xl">
+                            <a href="#" class="text-pink-500"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-blue-500"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-tiktok"></i></a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">روابط هامة</h3>
+                        <ul class="space-y-2 text-gray-400">
+                            <li><a href="#">سياسة الخصوصية</a></li>
+                            <li><a href="#">سياسة الشحن</a></li>
+                            <li><a href="#">الإبلاغ عن مشكل</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">مقرنا</h3>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d102434.61338662661!2d2.8091176211604165!3d36.48202573686866!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128fa6b00676b0cb%3A0xe5a3bb4de278ce51!2sBlida!5e0!3m2!1sen!2sdz!4v1700000000000!5m2!1sen!2sdz" width="100%" height="150" style="border:0; border-radius:10px;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- Floating Buttons -->
+            <a href="https://wa.me/213540021900" target="_blank" class="fab fab-whatsapp"><i class="fab fa-whatsapp"></i></a>
+            <div class="fab fab-sewing" onclick="navigate('sewing')"><i class="fas fa-cut"></i></div>
+        </div>
+
+        <!-- ==================== ADMIN LOGIN ==================== -->
+        <div id="admin-login" class="hidden h-screen bg-gray-900 flex items-center justify-center fade-in">
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-96 text-center">
+                <h2 class="text-3xl font-bold text-primary mb-6">ROUJÎNA ADMIN</h2>
+                <input type="text" id="admin-user" placeholder="Username" class="w-full border-b-2 border-gray-300 p-2 mb-4 outline-none focus:border-primary">
+                <input type="password" id="admin-pass" placeholder="Password" class="w-full border-b-2 border-gray-300 p-2 mb-6 outline-none focus:border-primary">
+                <button onclick="loginAdmin()" class="w-full bg-primary text-white py-2 rounded font-bold hover:bg-secondary">دخول / Login</button>
+                <p id="login-error" class="text-red-500 text-sm mt-2 hidden">بيانات خاطئة</p>
+            </div>
+        </div>
+
+        <!-- ==================== ADMIN DASHBOARD ==================== -->
+        <div id="admin-view" class="hidden flex h-screen bg-gray-100 fade-in text-right">
+            <!-- Admin Sidebar -->
+            <div class="w-64 bg-gray-900 text-white flex flex-col">
+                <div class="p-6 text-2xl font-bold border-b border-gray-700 text-primary">لوحة التحكم</div>
+                <nav class="flex-1 overflow-y-auto">
+                    <ul class="p-4 space-y-2">
+                        <li><button onclick="switchAdminTab('dashboard')" class="w-full text-right p-3 hover:bg-gray-800 rounded"><i class="fas fa-chart-pie w-6"></i> الإحصائيات</button></li>
+                        <li><button onclick="switchAdminTab('orders')" class="w-full text-right p-3 hover:bg-gray-800 rounded text-green-400"><i class="fas fa-box w-6"></i> الطلبات</button></li>
+                        <li><button onclick="switchAdminTab('products')" class="w-full text-right p-3 hover:bg-gray-800 rounded text-blue-400"><i class="fas fa-tags w-6"></i> المنتجات</button></li>
+                        <li><button onclick="switchAdminTab('finance')" class="w-full text-right p-3 hover:bg-gray-800 rounded text-yellow-400"><i class="fas fa-wallet w-6"></i> إدارتي المالية</button></li>
+                        <li><button onclick="switchAdminTab('settings')" class="w-full text-right p-3 hover:bg-gray-800 rounded text-purple-400"><i class="fas fa-cog w-6"></i> الإعدادات والتصميم</button></li>
+                        <li><button onclick="logoutAdmin()" class="w-full text-right p-3 hover:bg-red-800 rounded text-red-500 mt-10"><i class="fas fa-sign-out-alt w-6"></i> تسجيل خروج</button></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Admin Main Content -->
+            <div class="flex-1 overflow-y-auto p-8" id="admin-content">
+                <!-- Dashboard Tab -->
+                <div id="tab-dashboard" class="admin-tab">
+                    <h2 class="text-3xl font-bold mb-6">نظرة عامة حية</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-blue-500 text-white p-6 rounded-xl shadow cursor-pointer hover:scale-105 transition" onclick="switchAdminTab('orders')">
+                            <h3 class="text-lg">طلبات جديدة</h3><p class="text-4xl font-bold mt-2">12</p>
+                        </div>
+                        <div class="bg-green-500 text-white p-6 rounded-xl shadow cursor-pointer hover:scale-105 transition">
+                            <h3 class="text-lg">طلبات مؤكدة</h3><p class="text-4xl font-bold mt-2">45</p>
+                        </div>
+                        <div class="bg-purple-500 text-white p-6 rounded-xl shadow cursor-pointer hover:scale-105 transition">
+                            <h3 class="text-lg">طلبات تصميم</h3><p class="text-4xl font-bold mt-2">3</p>
+                        </div>
+                        <div class="bg-orange-500 text-white p-6 rounded-xl shadow cursor-pointer hover:scale-105 transition">
+                            <h3 class="text-lg">أرباح الشهر</h3><p class="text-4xl font-bold mt-2">150,000 دج</p>
+                        </div>
+                    </div>
+                    <div class="mt-8 bg-white p-6 rounded-xl shadow">
+                        <canvas id="salesChart" height="100"></canvas>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div id="tab-products" class="admin-tab hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold">إدارة المنتجات</h2>
+                        <button onclick="toggleProductForm()" class="bg-primary text-white px-4 py-2 rounded shadow">+ منتج جديد</button>
+                    </div>
+                    
+                    <!-- Add Product Form -->
+                    <div id="add-product-form" class="bg-white p-6 rounded-xl shadow mb-6 hidden">
+                        <h3 class="text-xl font-bold mb-4">إضافة منتج جديد</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label>الاسم (عربي)</label><input type="text" class="w-full border p-2 rounded"></div>
+                            <div><label>الاسم (فرنسي)</label><input type="text" class="w-full border p-2 rounded"></div>
+                            <div><label>السعر الجديد</label><input type="number" class="w-full border p-2 rounded"></div>
+                            <div><label>السعر القديم (للتخفيض)</label><input type="number" class="w-full border p-2 rounded"></div>
+                            <div class="col-span-2"><label>الوصف (عربي)</label><textarea class="w-full border p-2 rounded"></textarea></div>
+                            <div class="col-span-2"><label>صور المنتج (يتم ضغطها تلقائياً)</label><input type="file" multiple class="w-full border p-2 rounded"></div>
+                        </div>
+                        <button class="mt-4 bg-green-500 text-white px-6 py-2 rounded shadow font-bold" onclick="alert('جاري الرفع لـ Firebase...')">نشر المنتج</button>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow overflow-hidden">
+                        <table class="w-full text-right">
+                            <thead class="bg-gray-200">
+                                <tr><th>الصورة</th><th>الاسم</th><th>السعر</th><th>المخزون</th><th>إجراء</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b p-2">
+                                    <td class="p-2"><img src="https://via.placeholder.com/50" class="w-12 h-12 rounded"></td>
+                                    <td>فستان سهرة / Robe Soirée</td>
+                                    <td>4500 دج</td>
+                                    <td>10</td>
+                                    <td><button class="text-blue-500 mx-2"><i class="fas fa-edit"></i></button><button class="text-red-500"><i class="fas fa-trash"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="tab-settings" class="admin-tab hidden">
+                    <h2 class="text-3xl font-bold mb-6">إعدادات الموقع</h2>
+                    <div class="bg-white p-6 rounded-xl shadow mb-6">
+                        <h3 class="text-xl font-bold mb-4">تغيير ألوان الموقع (Theme)</h3>
+                        <div class="flex gap-4">
+                            <button onclick="changeTheme('purple')" class="w-10 h-10 rounded-full bg-purple-500 shadow-lg border-2 border-white"></button>
+                            <button onclick="changeTheme('red')" class="w-10 h-10 rounded-full bg-rose-600 shadow-lg border-2 border-white"></button>
+                            <button onclick="changeTheme('orange')" class="w-10 h-10 rounded-full bg-orange-500 shadow-lg border-2 border-white"></button>
+                            <button onclick="changeTheme('gold')" class="w-10 h-10 rounded-full bg-yellow-500 shadow-lg border-2 border-white"></button>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-4">رفع ملف CSV لأسعار الشحن للولايات</h3>
+                        <input type="file" accept=".csv" class="w-full border p-2 rounded mb-2">
+                        <p class="text-sm text-gray-500">القيمة 0 تعني أن الشحن غير مدعوم لتلك الولاية.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (ES Modules) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyD0yIvV9kyerbUi9udhjTdvdPckSTBluTk",
+            authDomain: "cdestok-marketplace.firebaseapp.com",
+            projectId: "cdestok-marketplace",
+            storageBucket: "cdestok-marketplace.firebasestorage.app",
+            messagingSenderId: "993053470339",
+            appId: "1:993053470339:web:0765d60a66f97d827d75b6",
+            measurementId: "G-DV4VE0K1SR"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
+
+        // Make DB accessible globally for our inline functions
+        window.firebaseDB = db;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseCollection = collection;
+    </script>
+
+    <!-- App Logic -->
+    <script>
+        // --- 1. STATE & ROUTING ---
+        let currentLang = 'ar';
+        const DOM = {
+            client: document.getElementById('client-view'),
+            adminLogin: document.getElementById('admin-login'),
+            adminView: document.getElementById('admin-view'),
+            home: document.getElementById('page-home'),
+            sewing: document.getElementById('page-sewing')
+        };
+
+        function handleRoute() {
+            const hash = window.location.hash;
+            
+            // Hide everything first
+            DOM.client.classList.add('hidden');
+            DOM.adminLogin.classList.add('hidden');
+            DOM.adminView.classList.add('hidden');
+            DOM.home.classList.add('hidden');
+            DOM.sewing.classList.add('hidden');
+
+            if (hash === '#admin09') {
+                if(localStorage.getItem('adminAuth') === 'true') {
+                    DOM.adminView.classList.remove('hidden');
+                    initAdminCharts();
+                } else {
+                    DOM.adminLogin.classList.remove('hidden');
+                }
+            } else if (hash === '#sewing') {
+                DOM.client.classList.remove('hidden');
+                DOM.sewing.classList.remove('hidden');
+            } else {
+                // Default Home
+                DOM.client.classList.remove('hidden');
+                DOM.home.classList.remove('hidden');
+                renderHome();
+            }
+        }
+        window.addEventListener('hashchange', handleRoute);
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            handleRoute();
+        });
+
+        function navigate(page) {
+            window.location.hash = page === 'home' ? '' : `#${page}`;
+        }
+
+        // --- 2. SECURITY (OBFUSCATED AUTH) ---
+        // Note: Real security requires Firebase Firestore Rules. This stops basic URL access.
+        const _u = "YWRtaW4="; // base64 'admin'
+        const _p = "I2FtaXJhMjAyNiM="; // base64 '#amira2026#'
+
+        function loginAdmin() {
+            const u = btoa(document.getElementById('admin-user').value);
+            const p = btoa(document.getElementById('admin-pass').value);
+            if (u === _u && p === _p) {
+                localStorage.setItem('adminAuth', 'true');
+                handleRoute();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('adminAuth');
+            window.location.hash = '';
+        }
+
+        // --- 3. UI FUNCTIONS & THEMES ---
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.add('toast-show');
+            setTimeout(() => toast.classList.remove('toast-show'), 3000);
+        }
+
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'fr' : 'ar';
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            // Here you would trigger text re-rendering (Simplified for demo)
+        }
+
+        function changeTheme(color) {
+            document.documentElement.setAttribute('data-theme', color);
+            localStorage.setItem('roujina_theme', color);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('roujina_theme');
+            if(savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        // --- 4. DUMMY DATA & RENDERING (Simulating Firebase Local Cache) ---
+        const categories = [
+            { img: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=200', name: 'ملابس نسائية' },
+            { img: 'https://images.unsplash.com/photo-1519241047957-be31d7379a5d?w=200', name: 'أطفال' },
+            { img: 'https://images.unsplash.com/photo-1522771731478-44eb10e5c845?w=200', name: 'أفرشة' },
+            { img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200', name: 'خياطة' },
+            { img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=200', name: 'إكسسوارات' }
+        ];
+
+        const products = [
+            { id: 1, name: 'فستان صيفي أنيق', price: '4500 دج', img: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500', featured: true },
+            { id: 2, name: 'طقم أطفال ولادي', price: '3200 دج', img: 'https://images.unsplash.com/photo-1519241047957-be31d7379a5d?w=500', featured: true },
+            { id: 3, name: 'غطاء سرير ملكي', price: '8900 دج', img: 'https://images.unsplash.com/photo-1522771731478-44eb10e5c845?w=500', featured: false },
+            { id: 4, name: 'حقيبة يد جلدية', price: '2500 دج', img: 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=500', featured: true }
+        ];
+
+        function renderHome() {
+            // Render Categories
+            const catContainer = document.getElementById('categories-container');
+            catContainer.innerHTML = categories.map(c => `
+                <div class="flex flex-col items-center min-w-[90px] cursor-pointer hover:scale-105 transition">
+                    <img src="${c.img}" class="category-circle shadow-md">
+                    <span class="text-sm font-bold mt-2 text-center whitespace-nowrap">${c.name}</span>
+                </div>
+            `).join('');
+
+            // Render Products
+            const prodContainer = document.getElementById('products-container');
+            prodContainer.innerHTML = products.map(p => `
+                <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden cursor-pointer">
+                    <div class="relative">
+                        <img src="${p.img}" class="w-full h-48 object-cover">
+                        ${p.featured ? '<span class="absolute top-2 right-2 bg-yellow-400 text-xs font-bold px-2 py-1 rounded shadow">مميز</span>' : ''}
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-gray-800">${p.name}</h4>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-primary font-bold text-lg">${p.price}</span>
+                            <button class="bg-primary text-white w-8 h-8 rounded-full hover:bg-secondary"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- 5. SUBMIT FORMS TO FIREBASE ---
+        async function submitSewingOrder(e) {
+            e.preventDefault();
+            
+            // In a real scenario, handle image upload to Firebase Storage here first.
+            // Using placeholder logic for demonstration due to single-file limit.
+            try {
+                if(window.firebaseDB) {
+                    await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, "sewing_orders"), {
+                        customer: "Client Name", // from form
+                        phone: "0555...", 
+                        status: "pending",
+                        timestamp: new Date()
+                    });
+                }
+                showToast('تم إرسال طلب الخياطة بنجاح! سنتصل بك قريباً.');
+                e.target.reset();
+                setTimeout(() => navigate('home'), 2000);
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showToast('حدث خطأ، يرجى المحاولة لاحقاً');
+            }
+        }
+
+        // --- 6. ADMIN DASHBOARD LOGIC ---
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        }
+
+        function toggleProductForm() {
+            document.getElementById('add-product-form').classList.toggle('hidden');
+        }
+
+        // Initialize Chart.js
+        let salesChartInst = null;
+        function initAdminCharts() {
+            if(salesChartInst) return; // already initialized
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            salesChartInst = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'المبيعات الشهرية',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000],
+                        borderColor: '#8b5cf6',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(139, 92, 246, 0.2)'
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        // --- 7. UTILS: IMAGE COMPRESSION API ---
+        function compressImage(file, callback) {
+            if (!file || !file.type.match(/image.*/)) return;
+            if (file.size < 1.5 * 1024 * 1024) return callback(file); // Don't compress if < 1.5MB
+
+            const reader = new FileReader();
+            reader.onload = (readerEvent) => {
+                const image = new Image();
+                image.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const maxSize = 1200; // max width/height
+                    let width = image.width;
+                    let height = image.height;
+
+                    if (width > height && width > maxSize) { height *= maxSize / width; width = maxSize; } 
+                    else if (height > maxSize) { width *= maxSize / height; height = maxSize; }
+
+                    canvas.width = width; canvas.height = height;
+                    canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+                    
+                    canvas.toBlob((blob) => {
+                        const compressedFile = new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() });
+                        callback(compressedFile);
+                    }, 'image/jpeg', 0.7); // 70% quality
+                };
+                image.src = readerEvent.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Add Meta Pixel (Placeholder)
+        // !function(f,b,e,v,n,t,s) { ... fbq('init', 'YOUR_PIXEL_ID'); ... }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+    </script>
+</body>
+</html>
