@@ -181,13 +181,14 @@
 
         .admin-table-wrap { overflow-x:auto; background:white; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
         .admin-table { width: 100%; border-collapse: collapse; min-width:600px;}
-        .admin-table th, .admin-table td { padding: 12px; text-align: right; border-bottom: 1px solid #eee; font-size:14px;}
+        .admin-table th, .admin-table td { padding: 12px; text-align: right; border-bottom: 1px solid #eee; font-size:14px; vertical-align: middle;}
         .admin-table th { background: var(--dark); color: white; }
-        .status-badge { padding: 5px 8px; border-radius: 15px; font-size: 12px; color: white; border:none;}
+        .status-badge { padding: 5px 8px; border-radius: 15px; font-size: 12px; color: white; border:none; outline:none; font-weight:bold;}
         .status-pending { background: #f1c40f; color:#000;}
         .status-confirmed { background: var(--success); }
         .status-cancelled { background: var(--danger); }
-        .action-btn { padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; color: white; margin-left: 5px; font-size:12px; }
+        .action-btn { padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; color: white; margin-left: 5px; font-size:12px; transition:0.3s; }
+        .action-btn:hover { opacity:0.8; }
 
         .invoice-box { background: white; padding: 30px; border-radius: 10px; margin: auto; border: 1px solid #eee; font-family: 'Helvetica', sans-serif; direction: ltr; text-align: left; max-width:800px;}
         .invoice-header { display: flex; justify-content: space-between; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 15px; }
@@ -447,7 +448,11 @@
                     <table class="admin-table">
                         <thead><tr>
                             <th><input type="checkbox" onchange="document.querySelectorAll('.order-check').forEach(c=>c.checked=this.checked)"></th>
-                            <th>رقم الطلب</th><th>المنتج (اللون/المقاس)</th><th>الزبون</th><th>الولاية/العنوان</th><th>الإجمالي</th><th>الحالة</th><th>إجراء</th>
+                            <th>معلومات الطلب</th>
+                            <th>الزبون والعنوان</th>
+                            <th>التفاصيل المالية</th>
+                            <th>الحالة</th>
+                            <th>إجراء</th>
                         </tr></thead>
                         <tbody id="orders-tbody"></tbody>
                     </table>
@@ -593,6 +598,10 @@
                         <div><label>سياسة الخصوصية (فرنسي)</label><textarea id="set-priv-fr" class="form-control" rows="2"></textarea></div>
                     </div>
                     <div class="form-row">
+                        <div><label>سياسة الشحن (عربي)</label><textarea id="set-ship-ar" class="form-control" rows="2"></textarea></div>
+                        <div><label>سياسة الشحن (فرنسي)</label><textarea id="set-ship-fr" class="form-control" rows="2"></textarea></div>
+                    </div>
+                    <div class="form-row">
                         <div><label>رابط Google Maps (Embed src)</label><input type="text" id="set-map" class="form-control"></div>
                     </div>
                     <button class="btn" onclick="saveSettings()" style="margin-top:15px;">حفظ التغييرات في Firebase</button>
@@ -688,7 +697,7 @@
                 {id:16, name_ar:'الجزائر', name_fr:'Alger', price_desk:400, price_home:600},
                 {id:9, name_ar:'البليدة', name_fr:'Blida', price_desk:300, price_home:500}
             ],
-            settings: { whatsapp: "213540021900", about_ar: "ورشة روجينا", about_fr: "Atelier ROUJINA", priv_ar:"الخصوصية", priv_fr:"Confidentialité", theme: "#8e44ad", map:"", logo:"", head:"", top_ad:"", pop_ad:"" }
+            settings: { whatsapp: "213540021900", about_ar: "ورشة روجينا", about_fr: "Atelier ROUJINA", priv_ar:"الخصوصية", priv_fr:"Confidentialité", ship_ar:"سياسة الشحن", ship_fr:"Politique de livraison", theme: "#8e44ad", map:"", logo:"", head:"", top_ad:"", pop_ad:"" }
         };
 
         // UI Helpers
@@ -717,6 +726,8 @@
         function updateStaticTexts(){
             document.getElementById('txt-about').innerText = window.siteState.lang==='ar' ? window.siteState.settings.about_ar : window.siteState.settings.about_fr;
             document.getElementById('txt-privacy').innerText = window.siteState.lang==='ar' ? window.siteState.settings.priv_ar : window.siteState.settings.priv_fr;
+            document.getElementById('txt-shipping').innerText = window.siteState.lang==='ar' ? window.siteState.settings.ship_ar : window.siteState.settings.ship_fr;
+            
             if(window.siteState.settings.whatsapp) document.getElementById('whatsapp-fab').style.display = 'flex';
             if(window.siteState.settings.map) document.getElementById('map-iframe').src = window.siteState.settings.map;
             applyTheme(window.siteState.settings.theme);
@@ -824,6 +835,12 @@
                 if(snap.exists()){
                     window.siteState.settings = {...window.siteState.settings, ...snap.data()};
                     updateStaticTexts();
+                    
+                    // تحديث نصوص الإعدادات في لوحة التحكم
+                    if(document.getElementById('set-ship-ar')) {
+                        document.getElementById('set-ship-ar').value = snap.data().ship_ar || '';
+                        document.getElementById('set-ship-fr').value = snap.data().ship_fr || '';
+                    }
                 }
             });
             // جلب أسعار الشحن من Firebase للجميع
@@ -970,7 +987,7 @@
                             <div style="display:flex; justify-content:space-between; font-size:22px; color:var(--primary); font-weight:800; margin-top:10px;"><span>${window.siteState.lang==='ar'?'الإجمالي':'Total'}:</span> <span><span id="chk-total-price">${p.price}</span> DA</span></div>
                         </div>
                         
-                        <button class="btn" onclick="submitProductOrder('${p.id}', '${p.name_ar}', ${p.price})">
+                        <button class="btn" onclick="submitProductOrder('${p.id}')">
                             <i class="fas fa-shopping-cart" style="margin-left:8px;"></i> ${window.siteState.lang==='ar'?'تأكيد الطلب':'Confirmer la commande'}
                         </button>
                     </div>
@@ -985,7 +1002,10 @@
             document.getElementById('chk-total-price').innerText = prodPrice + (shipPrice || 0);
         };
 
-        window.submitProductOrder = async (prodId, prodName, prodPrice) => {
+        window.submitProductOrder = async (prodId) => {
+            const p = window.siteState.products.find(x => x.id === prodId);
+            if(!p) return;
+            
             const name = document.getElementById('chk-name').value;
             const phone = document.getElementById('chk-phone').value;
             const wilaya = document.getElementById('chk-wilaya');
@@ -1001,11 +1021,13 @@
             const shipPrice = document.getElementById('chk-shipping-price').innerText;
             const total = document.getElementById('chk-total-price').innerText;
 
+            const prodNameFull = `${p.name_ar} ${size?`(${size})`:''} ${color?`[${color}]`:''}`;
+
             const order = { 
                 id: 'O-'+Date.now().toString().slice(-6), type: 'product', 
-                prodName: `${prodName} ${size?`(${size})`:''} ${color?`[${color}]`:''}`, 
-                customer: name, phone: phone, wilaya: wilaya.options[wilaya.selectedIndex].text, 
-                address: address, total: total, prodPrice: prodPrice, shipPrice: shipPrice,
+                prodName: prodNameFull, customer: name, phone: phone, 
+                wilaya: wilaya.options[wilaya.selectedIndex].text, address: address, 
+                total: total, prodPrice: p.price, shipPrice: shipPrice,
                 status: 'pending', date: new Date().toISOString() 
             };
             try { await addDoc(collection(db, "orders"), order); } catch(e){ alert("حدث خطأ في الإرسال"); return;}
@@ -1065,19 +1087,67 @@
             } catch(e) {}
         }
 
-        // Functions exposed globally to fix scoping issues with delete buttons
+        // Functions exposed globally to fix scoping issues safely
         window.deleteOrder = async (fbId) => { if(confirm("هل أنت متأكد من الحذف؟")) await deleteDoc(doc(db, "orders", fbId)); };
         window.deleteSewingOrder = async (fbId) => { if(confirm("هل أنت متأكد من الحذف؟")) await deleteDoc(doc(db, "sewing_orders", fbId)); };
         window.deleteProductItem = async (id) => { if(confirm("هل أنت متأكد من حذف المنتج؟")) await deleteDoc(doc(db, "products", id)); };
         window.deleteBannerItem = async (id) => { if(confirm("هل أنت متأكد من حذف البانر؟")) await deleteDoc(doc(db, "banners", id)); };
 
+        // حل مشكلة فتح الملصقات بشكل آمن
+        window.openLabelModalSafe = (fbId) => {
+            const o = window.siteState.orders.find(x => x.fbId === fbId);
+            if(!o) return;
+            document.getElementById('lbl-id').innerText = o.id; 
+            document.getElementById('lbl-name').innerText = o.customer; 
+            document.getElementById('lbl-phone').innerText = o.phone; 
+            document.getElementById('lbl-wilaya').innerText = o.wilaya;
+            document.getElementById('lbl-address').innerText = o.address;
+            document.getElementById('lbl-prodName').innerText = o.prodName;
+            document.getElementById('lbl-prodPrice').innerText = o.prodPrice || 0;
+            document.getElementById('lbl-shipPrice').innerText = o.shipPrice || 0;
+            document.getElementById('lbl-total').innerText = o.total;
+
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById("qrcode"), { text: `${o.id}|${o.customer}|${o.phone}|${o.total}DA`, width: 100, height: 100 });
+            openModal('print-label-modal');
+        };
+
+        window.openSewingLabelModalSafe = (fbId) => {
+            const o = window.siteState.sewingOrders.find(x => x.fbId === fbId);
+            if(!o) return;
+            document.getElementById('lbl-id').innerText = o.id; 
+            document.getElementById('lbl-name').innerText = o.customer; 
+            document.getElementById('lbl-phone').innerText = o.phone; 
+            document.getElementById('lbl-wilaya').innerText = o.wilaya;
+            document.getElementById('lbl-address').innerText = '-';
+            document.getElementById('lbl-prodName').innerText = 'طلب خياطة وتصميم';
+            document.getElementById('lbl-prodPrice').innerText = '-';
+            document.getElementById('lbl-shipPrice').innerText = '-';
+            document.getElementById('lbl-total').innerText = '-';
+
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById("qrcode"), { text: `${o.id}|${o.customer}|${o.phone}`, width: 100, height: 100 });
+            openModal('print-label-modal');
+        };
+
+        // ترتيب جدول الطلبات وجعله منظماً
         window.renderAdminOrders = () => {
-            document.getElementById('orders-tbody').innerHTML = window.siteState.orders.slice().reverse().map(o => `<tr>
+            document.getElementById('orders-tbody').innerHTML = window.siteState.orders.slice().reverse().map(o => `
+            <tr>
                 <td><input type="checkbox" class="order-check" value="${o.fbId}"></td>
-                <td>${o.id}</td><td>${o.prodName}</td><td>${o.customer}<br>${o.phone}</td><td>${o.wilaya}<br>${o.address}</td><td>${o.total}</td>
+                <td><strong style="color:var(--primary); font-size:16px;">${o.id}</strong><br><span style="color:#777; font-size:12px;">${new Date(o.date).toLocaleDateString('ar-DZ')}</span></td>
+                <td><strong>${o.prodName}</strong></td>
+                <td><i class="fas fa-user"></i> ${o.customer}<br><i class="fas fa-phone"></i> ${o.phone}<br><i class="fas fa-map-marker-alt"></i> ${o.wilaya} - ${o.address}</td>
+                <td>
+                    سعر المنتج: <strong>${o.prodPrice || 0} DA</strong><br>
+                    سعر الشحن: <strong>${o.shipPrice || 0} DA</strong><br>
+                    الإجمالي: <strong style="color:var(--success); font-size:16px;">${o.total} DA</strong>
+                </td>
                 <td><select onchange="changeOrderStatus('${o.fbId}', this.value)" class="status-badge ${o.status==='confirmed'?'status-confirmed':(o.status==='cancelled'?'status-cancelled':'status-pending')}"><option value="pending" ${o.status==='pending'?'selected':''}>مراجعة</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>مؤكد</option><option value="cancelled" ${o.status==='cancelled'?'selected':''}>ملغى</option></select></td>
-                <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.wilaya}', '${o.address}', '${o.total}', '${o.prodName}', '${o.prodPrice||'0'}', '${o.shipPrice||'0'}')"><i class="fas fa-print"></i></button>
-                <button class="action-btn" style="background:var(--danger);" onclick="deleteOrder('${o.fbId}')"><i class="fas fa-trash"></i></button></td>
+                <td>
+                    <button class="action-btn" style="background:#34495e;" onclick="window.openLabelModalSafe('${o.fbId}')" title="طباعة الملصق"><i class="fas fa-print"></i></button>
+                    <button class="action-btn" style="background:var(--danger);" onclick="window.deleteOrder('${o.fbId}')" title="حذف الطلب"><i class="fas fa-trash"></i></button>
+                </td>
             </tr>`).join('');
         };
         window.changeOrderStatus = async (fbId, newStatus) => { await updateDoc(doc(db, "orders", fbId), { status: newStatus }); };
@@ -1085,8 +1155,10 @@
         window.renderAdminSewing = () => {
             document.getElementById('sewing-tbody').innerHTML = window.siteState.sewingOrders.slice().reverse().map(o => `<tr>
                 <td>${o.id}</td><td>${o.img?`<img src="${o.img}" style="width:40px; border-radius:5px;">`:'-'}</td><td>${o.desc}</td><td>${o.customer}<br>${o.phone}</td><td>${o.wilaya}</td>
-                <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.wilaya}', '-', '-', 'طلب خياطة', '-', '-')"><i class="fas fa-print"></i></button>
-                <button class="action-btn" style="background:var(--danger);" onclick="deleteSewingOrder('${o.fbId}')"><i class="fas fa-trash"></i></button></td>
+                <td>
+                    <button class="action-btn" style="background:#34495e;" onclick="window.openSewingLabelModalSafe('${o.fbId}')"><i class="fas fa-print"></i></button>
+                    <button class="action-btn" style="background:var(--danger);" onclick="window.deleteSewingOrder('${o.fbId}')"><i class="fas fa-trash"></i></button>
+                </td>
             </tr>`).join('');
         };
 
@@ -1097,7 +1169,7 @@
             let csv = '\uFEFFرقم الطلب,المنتج,الزبون,الهاتف,الولاية,العنوان,سعر المنتج,سعر التوصيل,الإجمالي,التاريخ\n';
             checks.forEach(chk => {
                 const o = window.siteState.orders.find(x => x.fbId === chk.value);
-                if(o) csv += `${o.id},"${o.prodName}","${o.customer}","${o.phone}","${o.wilaya}","${o.address}","${o.prodPrice||0}","${o.shipPrice||0}","${o.total}","${new Date(o.date).toLocaleDateString()}"\n`;
+                if(o) csv += `${o.id},"${o.prodName}","${o.customer}","${o.phone}","${o.wilaya}","${o.address}","${o.prodPrice||0}","${o.shipPrice||0}","${o.total}","${new Date(o.date).toLocaleDateString('en-GB')}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
@@ -1114,8 +1186,8 @@
                     <img src="${thumbImg}" class="product-img">
                     <div class="product-info"><strong>${p.name_ar}</strong><p>${p.price} DA | الكمية: ${p.stock}</p>
                     <div style="display:flex; justify-content:space-between; gap:5px; margin-top:5px;">
-                        <button class="btn" style="background:var(--secondary); padding:5px;" onclick="editProduct('${p.id}')">تعديل</button>
-                        <button class="btn" style="background:var(--danger); padding:5px;" onclick="deleteProductItem('${p.id}')">حذف</button>
+                        <button class="btn" style="background:var(--secondary); padding:5px;" onclick="window.editProduct('${p.id}')">تعديل</button>
+                        <button class="btn" style="background:var(--danger); padding:5px;" onclick="window.deleteProductItem('${p.id}')">حذف</button>
                     </div>
                     </div>
                 </div>`
@@ -1194,7 +1266,7 @@
         };
 
         window.renderAdminBanners = () => {
-            document.getElementById('admin-banners-list').innerHTML = window.siteState.banners.map(b => `<div style="position:relative; min-width:150px;"><img src="${b.img}" style="width:150px; height:80px; object-fit:cover; border-radius:5px;"><button class="action-btn" style="position:absolute; top:5px; right:5px; background:red;" onclick="deleteBannerItem('${b.id}')"><i class="fas fa-trash"></i></button></div>`).join('');
+            document.getElementById('admin-banners-list').innerHTML = window.siteState.banners.map(b => `<div style="position:relative; min-width:150px;"><img src="${b.img}" style="width:150px; height:80px; object-fit:cover; border-radius:5px;"><button class="action-btn" style="position:absolute; top:5px; right:5px; background:red;" onclick="window.deleteBannerItem('${b.id}')"><i class="fas fa-trash"></i></button></div>`).join('');
         };
         window.addBanner = async () => {
             const file = document.getElementById('banner-img').files[0]; if(!file) return alert("اختر صورة");
@@ -1255,6 +1327,7 @@
             const updates = {
                 about_ar: document.getElementById('set-about-ar').value, about_fr: document.getElementById('set-about-fr').value,
                 priv_ar: document.getElementById('set-priv-ar').value, priv_fr: document.getElementById('set-priv-fr').value,
+                ship_ar: document.getElementById('set-ship-ar').value, ship_fr: document.getElementById('set-ship-fr').value,
                 whatsapp: document.getElementById('set-whatsapp').value, map: document.getElementById('set-map').value,
                 head: document.getElementById('set-head').value, top_ad: document.getElementById('set-top-ad').value, pop_ad: document.getElementById('set-pop-ad').value
             };
@@ -1278,7 +1351,7 @@
             document.getElementById('inv-tva').innerText = tva; document.getElementById('inv-gtotal').innerText = sub + tva;
         };
 
-        // Utils (Compression, QR, PDF, Print)
+        // Utils (Compression, PDF, Print)
         function compressImage(file, maxSize) {
             return new Promise((resolve) => {
                 const reader = new FileReader(); reader.readAsDataURL(file);
@@ -1295,23 +1368,6 @@
             });
         }
 
-        window.generateQRLabel = (id, name, phone, wilaya, address, total, prodName, prodPrice, shipPrice) => {
-            document.getElementById('lbl-id').innerText = id; 
-            document.getElementById('lbl-name').innerText = name; 
-            document.getElementById('lbl-phone').innerText = phone; 
-            document.getElementById('lbl-wilaya').innerText = wilaya;
-            document.getElementById('lbl-address').innerText = address;
-            document.getElementById('lbl-prodName').innerText = prodName;
-            document.getElementById('lbl-prodPrice').innerText = prodPrice;
-            document.getElementById('lbl-shipPrice').innerText = shipPrice;
-            document.getElementById('lbl-total').innerText = total;
-
-            document.getElementById('qrcode').innerHTML = '';
-            new QRCode(document.getElementById("qrcode"), { text: `${id}|${name}|${phone}|${total}DA`, width: 100, height: 100 });
-            openModal('print-label-modal');
-        };
-
-        // Fix Print functionalities
         window.printLabel = () => { 
             document.body.classList.add('printing-label'); 
             window.print(); 
