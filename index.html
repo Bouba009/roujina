@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -86,9 +85,8 @@
         .category-item img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
         .category-item p { margin-top: 8px; font-size:14px; font-weight: bold; }
 
-        /* --- Products Grid (2 per row) --- */
+        /* --- Products Grid --- */
         .products-section { padding: 20px 5%; }
-        /* تعديل توسيط عنوان المنتجات */
         .section-title { text-align: center; font-size: 22px; margin: 0 auto 25px auto; position: relative; display: block; width: fit-content; }
         .section-title::after { content: ''; width: 50%; height: 3px; background: var(--primary); position: absolute; bottom: -5px; left: 25%; }
         
@@ -109,21 +107,24 @@
         .details-img-wrap img { width: 100%; max-width:400px; border-radius: 10px; aspect-ratio:1/1; object-fit:cover;}
         .details-info { flex: 1; }
         
-        /* استمارة الطلب الاحترافية والمقاسات */
-        .order-form { background: #fff; padding: 25px; border-radius: 15px; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
-        .pro-form-group { margin-bottom: 15px; }
-        .pro-form-group label { display: block; margin-bottom: 8px; font-weight: bold; font-size:14px; color: #444; }
-        .pro-input { width: 100%; padding: 12px 15px; border: 2px solid #eee; border-radius: 8px; outline: none; transition: var(--transition); font-family: inherit; font-size: 14px; background: #fafafa; }
-        .pro-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(142,68,173,0.1); }
+        /* استمارة الطلب العصرية */
+        .order-form { background: #fff; padding: 30px; border-radius: 15px; margin-top: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; }
+        .pro-form-group { margin-bottom: 18px; }
+        .pro-form-group label { display: block; margin-bottom: 8px; font-weight: bold; font-size:14px; color: #555; }
+        .input-icon-wrap { position: relative; }
+        .input-icon-wrap i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #888; }
+        .pro-input { width: 100%; padding: 14px 40px 14px 15px; border: 2px solid #eef0f3; border-radius: 10px; outline: none; transition: var(--transition); font-family: inherit; font-size: 15px; background: #f9fafb; color:#333; }
+        .pro-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(142,68,173,0.1); }
+        .pro-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
         .variant-selector { display: flex; gap: 10px; flex-wrap: wrap; }
         .variant-label { cursor: pointer; user-select: none; }
         .variant-label input { display: none; }
-        .variant-box { padding: 8px 18px; border: 2px solid #eee; border-radius: 8px; background: #fff; transition: var(--transition); font-weight: bold; color: #555; }
+        .variant-box { padding: 10px 20px; border: 2px solid #eef0f3; border-radius: 10px; background: #f9fafb; transition: var(--transition); font-weight: bold; color: #555; }
         .variant-label input:checked + .variant-box { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        .btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight:bold; cursor: pointer; transition: var(--transition); box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
-        .btn:hover { background: var(--dark); transform: translateY(-2px); }
+        .btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 17px; font-weight:bold; cursor: pointer; transition: var(--transition); box-shadow: 0 6px 15px rgba(0,0,0,0.1);}
+        .btn:hover { background: var(--dark); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15);}
 
         /* --- Floating Buttons --- */
         .fab-container { position: fixed; bottom: 30px; left: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
@@ -203,15 +204,22 @@
         
         .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; outline: none; font-family:inherit;}
 
-        /* Print Settings */
+        /* --- Ads System --- */
+        #top-ad-banner { display:none; background: var(--secondary); color:white; text-align:center; padding:10px; position:relative; z-index:1005;}
+        #top-ad-banner a { color:white; font-weight:bold; text-decoration:underline; }
+        #top-ad-banner .close-ad { position:absolute; left:15px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:18px;}
+
+        /* Print Settings Fix */
         @media print {
-            body * { visibility: hidden; }
-            #print-area, #print-area *, #label-print-area, #label-print-area * { visibility: visible; }
-            #print-area, #label-print-area { position: absolute; left: 0; top: 0; width: 100%; margin:0; padding:0; background:#fff;}
-            .no-print { display: none !important; }
-            .modal { background:none; position:absolute; }
-            .modal-content { box-shadow:none; width:100%; max-width:100%; padding:0;}
-            .close-modal { display:none;}
+            body > * { display: none !important; }
+            body.printing-label #print-label-modal, body.printing-label #print-label-modal * { visibility: visible; display:block !important;}
+            body.printing-label #print-label-modal { position: absolute; left: 0; top: 0; width: 100%; height:auto; background:white; }
+            body.printing-label .close-modal, body.printing-label .btn { display: none !important; }
+            body.printing-label #label-print-area { margin:0 auto; border:none; }
+            
+            body.printing-invoice #admin-panel, body.printing-invoice #tab-invoice, body.printing-invoice #print-area { display:block !important; visibility:visible;}
+            body.printing-invoice #print-area { position: absolute; left: 0; top: 0; width: 100%; background:white; }
+            body.printing-invoice .admin-sidebar, body.printing-invoice .admin-header, body.printing-invoice .no-print, body.printing-invoice .btn { display:none !important;}
         }
     </style>
 </head>
@@ -221,6 +229,12 @@
     <div id="global-loader">
         <div class="global-spinner"></div>
         <h2 style="color:var(--primary); font-weight:bold; letter-spacing: 2px;">ROUJÎNA</h2>
+    </div>
+
+    <!-- شريط الإعلان العلوي -->
+    <div id="top-ad-banner">
+        <i class="fas fa-times close-ad" onclick="this.parentElement.style.display='none'"></i>
+        <div id="top-ad-content"></div>
     </div>
 
     <!-- ==========================================
@@ -292,7 +306,7 @@
                 <div id="footer-map">
                     <h3 data-ar="مقرنا" data-fr="Notre Position">مقرنا</h3>
                     <div class="map-container" style="margin-top:10px;">
-                        <iframe id="map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d102371.49841804246!2d2.7483606775685845!3d36.48202573711904!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128f0c6fbb0b21a3%3A0x8035ed8bc42f1f8b!2sBlida!5e0!3m2!1sen!2sdz!4v1700000000000!5m2!1sen!2sdz" allowfullscreen="" loading="lazy"></iframe>
+                        <iframe id="map-iframe" src="" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                 </div>
             </div>
@@ -309,6 +323,15 @@
     <!-- ==========================================
          النوافذ المنبثقة المتجر
     =========================================== -->
+    
+    <!-- إعلان منبثق (Pop Ad) -->
+    <div class="modal" id="pop-ad-modal">
+        <div class="modal-content" style="padding:0; background:transparent; box-shadow:none;">
+            <i class="fas fa-times close-modal" style="color:white; right:-20px; top:-20px; font-size:28px;" onclick="closeModal('pop-ad-modal')"></i>
+            <div id="pop-ad-content"></div>
+        </div>
+    </div>
+
     <div class="modal" id="sewing-modal">
         <div class="modal-content">
             <i class="fas fa-times close-modal" onclick="closeModal('sewing-modal')"></i>
@@ -374,7 +397,7 @@
                 <li onclick="switchAdminTab('tab-shipping', this)"><i class="fas fa-truck"></i> الولايات والشحن</li>
                 <li onclick="switchAdminTab('tab-invoice', this)"><i class="fas fa-file-invoice"></i> تحرير فاتورة</li>
                 <li onclick="switchAdminTab('tab-accounting', this)"><i class="fas fa-wallet"></i> إدارتي المالية</li>
-                <li onclick="switchAdminTab('tab-settings', this)"><i class="fas fa-cog"></i> الإعدادات</li>
+                <li onclick="switchAdminTab('tab-settings', this)"><i class="fas fa-cog"></i> الإعدادات والتطوير</li>
                 <li onclick="logoutAdmin()" style="color: #e74c3c; margin-top: 30px;"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</li>
             </ul>
         </div>
@@ -416,10 +439,16 @@
 
             <!-- 2. Orders -->
             <div id="tab-orders" class="tab-section">
-                <h3>إدارة الطلبيات</h3>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+                    <h3>إدارة الطلبيات</h3>
+                    <button class="btn" style="width:180px; padding:8px; background:#27ae60;" onclick="exportSelectedOrders()"><i class="fas fa-file-excel"></i> تصدير (Google Sheets)</button>
+                </div>
                 <div class="admin-table-wrap" style="margin-top:15px;">
                     <table class="admin-table">
-                        <thead><tr><th>رقم الطلب</th><th>المنتج (اللون/المقاس)</th><th>الزبون</th><th>الولاية/العنوان</th><th>الإجمالي</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                        <thead><tr>
+                            <th><input type="checkbox" onchange="document.querySelectorAll('.order-check').forEach(c=>c.checked=this.checked)"></th>
+                            <th>رقم الطلب</th><th>المنتج (اللون/المقاس)</th><th>الزبون</th><th>الولاية/العنوان</th><th>الإجمالي</th><th>الحالة</th><th>إجراء</th>
+                        </tr></thead>
                         <tbody id="orders-tbody"></tbody>
                     </table>
                 </div>
@@ -451,7 +480,6 @@
                 <div class="form-row" style="background:white; padding:15px; border-radius:10px; margin-top:15px; align-items:flex-end;">
                     <div><label>صورة البانر</label><input type="file" id="banner-img" class="form-control" accept="image/*"></div>
                     <div><label>رابط التحويل</label>
-                        <!-- تم تغيير الـ select إلى حقل إدخال رابط احترافي -->
                         <input type="text" id="banner-link" class="form-control" placeholder="أدخل الرابط (اختياري)">
                     </div>
                     <div><button class="btn" onclick="addBanner()">إضافة البانر</button></div>
@@ -470,14 +498,15 @@
             <!-- 6. Shipping CSV -->
             <div id="tab-shipping" class="tab-section">
                 <h3>إدراج أسعار الشحن (ملف CSV)</h3>
+                <p style="font-size:13px; color:#555; margin-bottom:10px;">سيتم رفع الأسعار لقاعدة البيانات لتظهر للجميع.</p>
                 <p style="font-size:13px; color:#555;">الأعمدة: رقم، اسم، سعر مكتب، سعر منزل</p>
                 <input type="file" id="csv-file" accept=".csv" class="form-control" style="margin:15px 0;">
-                <button class="btn" onclick="parseCSV()">رفع وتحديث</button>
+                <button class="btn" onclick="parseCSV()">رفع وتحديث للجميع</button>
             </div>
 
             <!-- 7. Invoice -->
             <div id="tab-invoice" class="tab-section">
-                <button class="btn" onclick="window.print()" style="width:120px; margin-bottom:15px; padding:8px;"><i class="fas fa-print"></i> طباعة</button>
+                <button class="btn" onclick="window.printInvoice()" style="width:120px; margin-bottom:15px; padding:8px;"><i class="fas fa-print"></i> طباعة</button>
                 <button class="btn" onclick="downloadPDF('print-area', 'Facture_Roujina.pdf')" style="width:120px; margin-bottom:15px; padding:8px; background:#e67e22;"><i class="fas fa-download"></i> PDF</button>
                 
                 <div class="invoice-box" id="print-area">
@@ -538,14 +567,23 @@
 
             <!-- 9. Settings -->
             <div id="tab-settings" class="tab-section">
-                <h3>إعدادات الموقع والنصوص</h3>
+                <h3>إعدادات الموقع، الإعلانات والتطوير</h3>
                 <div style="background:white; padding:15px; border-radius:10px; margin-top:15px;">
                     <div class="form-row">
                         <div><label>لوغو الموقع (صورة)</label><input type="file" id="set-logo" class="form-control" accept="image/*"></div>
+                        <div><label>واتساب (213+)</label><input type="text" id="set-whatsapp" class="form-control"></div>
                     </div>
-                    <label style="margin-top:10px;display:block;">Meta Pixel Code</label><textarea id="set-pixel" class="form-control" rows="2"></textarea>
                     
-                    <h4 style="margin-top:15px;">النصوص والروابط</h4>
+                    <h4 style="margin-top:15px; color:var(--primary);">الإعلانات والأكواد (تطوير)</h4>
+                    <div class="form-row">
+                        <div><label>كود Head HTML (Meta, Pixels, Scripts)</label><textarea id="set-head" class="form-control" rows="3"></textarea></div>
+                    </div>
+                    <div class="form-row">
+                        <div><label>إعلان الشريط العلوي (HTML أو نص)</label><textarea id="set-top-ad" class="form-control" rows="2" placeholder="اتركه فارغاً للإخفاء"></textarea></div>
+                        <div><label>إعلان منبثق Pop-up (HTML، رابط صورة...)</label><textarea id="set-pop-ad" class="form-control" rows="2" placeholder="اتركه فارغاً للإخفاء"></textarea></div>
+                    </div>
+
+                    <h4 style="margin-top:15px; color:var(--primary);">النصوص والروابط</h4>
                     <div class="form-row">
                         <div><label>من نحن (عربي)</label><textarea id="set-about-ar" class="form-control" rows="2"></textarea></div>
                         <div><label>من نحن (فرنسي)</label><textarea id="set-about-fr" class="form-control" rows="2"></textarea></div>
@@ -555,7 +593,6 @@
                         <div><label>سياسة الخصوصية (فرنسي)</label><textarea id="set-priv-fr" class="form-control" rows="2"></textarea></div>
                     </div>
                     <div class="form-row">
-                        <div><label>واتساب (213+)</label><input type="text" id="set-whatsapp" class="form-control"></div>
                         <div><label>رابط Google Maps (Embed src)</label><input type="text" id="set-map" class="form-control"></div>
                     </div>
                     <button class="btn" onclick="saveSettings()" style="margin-top:15px;">حفظ التغييرات في Firebase</button>
@@ -571,7 +608,6 @@
             <i class="fas fa-times close-modal" onclick="closeModal('add-product-modal')"></i>
             <h2 id="modal-product-title" style="margin-bottom:15px;">إضافة/تعديل منتج</h2>
             <input type="hidden" id="prod-id">
-            <!-- إضافة دعم الصور المتعددة multiple -->
             <div class="form-group" style="margin-bottom:10px;"><label>صور المنتج (يمكنك اختيار عدة صور)</label><input type="file" id="prod-img" class="form-control" accept="image/*" multiple></div>
             <div class="form-row">
                 <div><label>الاسم (عربي)</label><input type="text" id="prod-name-ar" class="form-control"></div>
@@ -599,7 +635,7 @@
     <div class="modal" id="print-label-modal">
         <div class="modal-content" style="text-align:center;">
             <i class="fas fa-times close-modal" onclick="closeModal('print-label-modal')"></i>
-            <div id="label-print-area" style="padding:20px; border:2px dashed #000; margin:20px auto; background:#fff; width:100%; max-width:350px;">
+            <div id="label-print-area" style="padding:20px; background:#fff; width:100%; max-width:350px;">
                 <h2 style="margin-bottom:10px; font-family:sans-serif; color:var(--dark);">ROUJÎNA</h2>
                 <h4 style="margin-bottom:15px;">Bon de Livraison</h4>
                 <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>ID:</strong> <span id="lbl-id"></span></p>
@@ -615,7 +651,7 @@
                 <div id="qrcode" style="margin:15px auto; width:100px;"></div>
             </div>
             <div style="display:flex; gap:10px;">
-                <button class="btn" onclick="printElement('label-print-area')"><i class="fas fa-print"></i> طباعة</button>
+                <button class="btn" onclick="window.printLabel()"><i class="fas fa-print"></i> طباعة</button>
                 <button class="btn" style="background:#e67e22;" onclick="downloadPDF('label-print-area', 'Label.pdf')"><i class="fas fa-download"></i> PDF</button>
             </div>
         </div>
@@ -641,7 +677,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Security Hash for Admin (admin / #amira2026#)
+        // Security Hash for Admin
         const adminHash = "I2FtaXJhMjAyNiM=";
 
         // Global State (Synced with Firebase)
@@ -652,7 +688,7 @@
                 {id:16, name_ar:'الجزائر', name_fr:'Alger', price_desk:400, price_home:600},
                 {id:9, name_ar:'البليدة', name_fr:'Blida', price_desk:300, price_home:500}
             ],
-            settings: { whatsapp: "213540021900", about_ar: "ورشة روجينا", about_fr: "Atelier ROUJINA", priv_ar:"الخصوصية", priv_fr:"Confidentialité", theme: "#8e44ad", map:"", logo:"" }
+            settings: { whatsapp: "213540021900", about_ar: "ورشة روجينا", about_fr: "Atelier ROUJINA", priv_ar:"الخصوصية", priv_fr:"Confidentialité", theme: "#8e44ad", map:"", logo:"", head:"", top_ad:"", pop_ad:"" }
         };
 
         // UI Helpers
@@ -669,11 +705,10 @@
             document.getElementById('lang-toggle').innerText = window.siteState.lang === 'ar' ? 'FR' : 'AR';
             document.dir = window.siteState.lang === 'ar' ? 'rtl' : 'ltr';
             document.querySelectorAll('[data-ar]').forEach(el => el.innerText = el.getAttribute(`data-${window.siteState.lang}`));
-            renderCategories(); // تحديث الفئات لغة
-            renderFrontendProducts(); // تحديث المنتجات
+            renderCategories();
+            renderFrontendProducts();
             updateStaticTexts();
             
-            // تحديث استمارة الطلب إذا كانت مفتوحة
             if(window.location.hash.startsWith('#product-')){
                 renderProductDetails(window.location.hash.replace('#product-', ''));
             }
@@ -686,7 +721,6 @@
             if(window.siteState.settings.map) document.getElementById('map-iframe').src = window.siteState.settings.map;
             applyTheme(window.siteState.settings.theme);
             
-            // تطبيق اللوغو
             if(window.siteState.settings.logo) {
                 const logoHtml = `<img src="${window.siteState.settings.logo}" alt="ROUJINA">`;
                 document.getElementById('site-logo').innerHTML = logoHtml;
@@ -694,19 +728,31 @@
                 if(document.getElementById('admin-sidebar-logo')) document.getElementById('admin-sidebar-logo').innerHTML = logoHtml;
             }
 
-            // تحديث الحفظ المحلي للثيم واللوغو
+            // نظام الإعلانات و Head
+            if(!window.siteState.settings.headInjected && window.siteState.settings.head) {
+                const headFrag = document.createRange().createContextualFragment(window.siteState.settings.head);
+                document.head.appendChild(headFrag);
+                window.siteState.settings.headInjected = true;
+            }
+            if(window.siteState.settings.top_ad) {
+                document.getElementById('top-ad-banner').style.display = 'block';
+                document.getElementById('top-ad-content').innerHTML = window.siteState.settings.top_ad;
+            }
+            if(window.siteState.settings.pop_ad && !sessionStorage.getItem('popAdShown')) {
+                document.getElementById('pop-ad-content').innerHTML = window.siteState.settings.pop_ad;
+                openModal('pop-ad-modal');
+                sessionStorage.setItem('popAdShown', 'true');
+            }
+
             localStorage.setItem('siteSettings', JSON.stringify(window.siteState.settings));
         }
 
-        // Router & Global Loader Fix
         window.addEventListener('hashchange', router);
         window.addEventListener('load', async () => {
-            loadLocalWilayas();
             setupFirebaseListeners();
             await recordVisit();
             router();
             
-            // إخفاء شاشة التحميل بعد الانتهاء
             setTimeout(() => {
                 document.getElementById('global-loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('global-loader').style.display = 'none', 500);
@@ -780,9 +826,18 @@
                     updateStaticTexts();
                 }
             });
+            // جلب أسعار الشحن من Firebase للجميع
+            onSnapshot(doc(db, "settings", "wilayas"), (snap) => {
+                if(snap.exists() && snap.data().data){
+                    window.siteState.wilayas = snap.data().data;
+                    populateWilayasSelect();
+                    // تحديث المجموع إذا كانت الاستمارة مفتوحة
+                    const wSelect = document.getElementById('chk-wilaya');
+                    if(wSelect && wSelect.value) { wSelect.onchange(); }
+                }
+            });
         }
 
-        // Record Visit
         async function recordVisit() {
             const today = new Date().toISOString().split('T')[0];
             const month = today.substring(0, 7);
@@ -821,13 +876,11 @@
             const loader = document.getElementById('products-loader');
             if(loader) loader.style.display = 'none';
             
-            // حماية للفلترة (Null Safety)
             let prods = window.siteState.products.filter(p => !filterStr || (p.name_ar && p.name_ar.includes(filterStr)) || p.category === filterStr).sort((a,b) => (b.featured?1:0) - (a.featured?1:0));
             
             if(prods.length === 0) { document.getElementById('products-grid').innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1;">لا توجد منتجات حالياً.</p>'; return; }
             
             document.getElementById('products-grid').innerHTML = prods.map(p => {
-                // التأكد من عرض الصورة الأساسية إذا كان هناك أكثر من صورة
                 let thumbImg = p.images && p.images.length > 0 ? p.images[0] : p.img;
                 return `
                 <div class="product-card" onclick="window.location.hash='#product-${p.id}'">
@@ -843,19 +896,16 @@
         window.frontendSearch = () => renderFrontendProducts(document.getElementById('search-input').value);
         window.filterFrontend = (cat) => renderFrontendProducts(cat);
 
-        // Product Details & Pro Checkout Form
+        // Product Details & Checkout Form
         function renderProductDetails(id) {
             const p = window.siteState.products.find(x => x.id === id);
             if(!p) { window.location.hash=''; return; }
             const name = window.siteState.lang === 'ar' ? p.name_ar : p.name_fr;
             let wilayasOpts = `<option value="">-- ${window.siteState.lang==='ar'?'اختر':'Choisir'} --</option>` + window.siteState.wilayas.map(w => `<option value="${w.id}" data-desk="${w.price_desk}" data-home="${w.price_home}">${w.id} - ${window.siteState.lang==='ar'?w.name_ar:w.name_fr}</option>`).join('');
             
-            // المقاسات والالوان بتصميم احترافي (أزرار راديو مخفية بدل القائمة المنسدلة)
             let sizesHtml = p.sizes ? `<div class="pro-form-group"><label>${window.siteState.lang==='ar'?'المقاس:':'Taille:'}</label><div class="variant-selector">${p.sizes.split(',').map((s,i)=>`<label class="variant-label"><input type="radio" name="chk-size" value="${s.trim()}" ${i===0?'checked':''}><div class="variant-box">${s.trim()}</div></label>`).join('')}</div></div>` : '';
-            
             let colorsHtml = p.colors ? `<div class="pro-form-group"><label>${window.siteState.lang==='ar'?'اللون:':'Couleur:'}</label><div class="variant-selector">${p.colors.split(',').map((c,i)=>`<label class="variant-label"><input type="radio" name="chk-color" value="${c.trim()}" ${i===0?'checked':''}><div class="variant-box" style="border-radius:20px;">${c.trim()}</div></label>`).join('')}</div></div>` : '';
 
-            // صور متعددة
             let mainImg = p.images && p.images.length > 0 ? p.images[0] : p.img;
             let galleryHtml = '';
             if (p.images && p.images.length > 1) {
@@ -871,22 +921,40 @@
                 </div>
                 <div class="details-info">
                     <h1 style="color:var(--primary); margin-bottom:10px;">${name}</h1>
-                    <p style="font-size:24px; font-weight:bold; margin-bottom:10px;">${p.price} DA</p>
+                    <p style="font-size:26px; font-weight:800; margin-bottom:10px;">${p.price} DA</p>
                     <p style="color:#666; line-height:1.6; margin-bottom:20px;">${p.desc||''}</p>
+                    
                     <div class="order-form">
-                        <h3 style="margin-bottom:20px; color:var(--dark); text-align:center;">${window.siteState.lang==='ar'?'استمارة الطلب':'Formulaire de commande'}</h3>
+                        <h2 style="margin-bottom:20px; color:var(--dark); text-align:center; font-weight:800;">${window.siteState.lang==='ar'?'استمارة الطلب':'Formulaire de commande'}</h2>
                         ${sizesHtml} ${colorsHtml}
-                        <div class="pro-form-group">
-                            <input type="text" id="chk-name" class="pro-input" placeholder="${window.siteState.lang==='ar'?'الاسم الكريم':'Nom complet'}" required>
+                        
+                        <div class="pro-grid-2">
+                            <div class="pro-form-group">
+                                <label>${window.siteState.lang==='ar'?'الاسم الكريم':'Nom complet'}</label>
+                                <div class="input-icon-wrap">
+                                    <input type="text" id="chk-name" class="pro-input" placeholder="محمد..." required>
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="pro-form-group">
+                                <label>${window.siteState.lang==='ar'?'رقم الهاتف':'Téléphone'}</label>
+                                <div class="input-icon-wrap">
+                                    <input type="tel" id="chk-phone" class="pro-input" placeholder="05..." required>
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="pro-form-group">
-                            <input type="tel" id="chk-phone" class="pro-input" placeholder="${window.siteState.lang==='ar'?'رقم الهاتف':'Numéro de téléphone'}" required>
-                        </div>
-                        <div class="pro-form-group">
+                            <label>${window.siteState.lang==='ar'?'الولاية':'Wilaya'}</label>
                             <select id="chk-wilaya" class="pro-input" onchange="calcCheckoutTotal(${p.price})" required>${wilayasOpts}</select>
                         </div>
                         <div class="pro-form-group">
-                            <input type="text" id="chk-address" class="pro-input" placeholder="${window.siteState.lang==='ar'?'العنوان البلدي':'Adresse'}" required>
+                            <label>${window.siteState.lang==='ar'?'العنوان البلدي':'Adresse'}</label>
+                            <div class="input-icon-wrap">
+                                <input type="text" id="chk-address" class="pro-input" placeholder="الحي، البلدية..." required>
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
                         </div>
                         <div class="pro-form-group">
                             <label>${window.siteState.lang==='ar'?'نوع التوصيل':'Type de livraison'}</label>
@@ -895,12 +963,16 @@
                                 <option value="home">${window.siteState.lang==='ar'?'إلى باب المنزل':'À domicile'}</option>
                             </select>
                         </div>
-                        <div style="background:#f4f6f9; padding:15px; border-radius:8px; margin-bottom:20px; font-size:15px; color:#333;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${window.siteState.lang==='ar'?'المنتج':'Produit'}:</span> <strong>${p.price} DA</strong></div>
-                            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #ddd; padding-bottom:5px; margin-bottom:5px;"><span>${window.siteState.lang==='ar'?'التوصيل':'Livraison'}:</span> <strong><span id="chk-shipping-price">0</span> DA</strong></div>
-                            <div style="display:flex; justify-content:space-between; font-size:18px; color:var(--primary); font-weight:bold; margin-top:10px;"><span>${window.siteState.lang==='ar'?'الإجمالي':'Total'}:</span> <span><span id="chk-total-price">${p.price}</span> DA</span></div>
+                        
+                        <div style="background:#f4f6f9; padding:20px; border-radius:10px; margin-bottom:20px; font-size:16px; color:#333; border:1px solid #eef0f3;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>${window.siteState.lang==='ar'?'المنتج':'Produit'}:</span> <strong>${p.price} DA</strong></div>
+                            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #ddd; padding-bottom:8px; margin-bottom:8px;"><span>${window.siteState.lang==='ar'?'التوصيل':'Livraison'}:</span> <strong><span id="chk-shipping-price">0</span> DA</strong></div>
+                            <div style="display:flex; justify-content:space-between; font-size:22px; color:var(--primary); font-weight:800; margin-top:10px;"><span>${window.siteState.lang==='ar'?'الإجمالي':'Total'}:</span> <span><span id="chk-total-price">${p.price}</span> DA</span></div>
                         </div>
-                        <button class="btn" onclick="submitProductOrder('${p.id}', '${p.name_ar}', ${p.price})">${window.siteState.lang==='ar'?'تأكيد الطلب':'Confirmer'}</button>
+                        
+                        <button class="btn" onclick="submitProductOrder('${p.id}', '${p.name_ar}', ${p.price})">
+                            <i class="fas fa-shopping-cart" style="margin-left:8px;"></i> ${window.siteState.lang==='ar'?'تأكيد الطلب':'Confirmer la commande'}
+                        </button>
                     </div>
                 </div>`;
         }
@@ -919,7 +991,6 @@
             const wilaya = document.getElementById('chk-wilaya');
             const address = document.getElementById('chk-address').value;
             
-            // قراءة المقاس واللون من أزرار الراديو
             const sizeEl = document.querySelector('input[name="chk-size"]:checked');
             const colorEl = document.querySelector('input[name="chk-color"]:checked');
             const size = sizeEl ? sizeEl.value : '';
@@ -991,14 +1062,22 @@
                     data: { labels: ['مؤكدة', 'قيد المراجعة', 'ملغية'], datasets: [{ data: [o.filter(x=>x.status==='confirmed').length, o.filter(x=>x.status==='pending').length, o.filter(x=>x.status==='cancelled').length], backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'] }] },
                     options: { responsive: true, maintainAspectRatio: false }
                 });
-            } catch(e) { console.log('Chart update handled silently.'); }
+            } catch(e) {}
         }
+
+        // Functions exposed globally to fix scoping issues with delete buttons
+        window.deleteOrder = async (fbId) => { if(confirm("هل أنت متأكد من الحذف؟")) await deleteDoc(doc(db, "orders", fbId)); };
+        window.deleteSewingOrder = async (fbId) => { if(confirm("هل أنت متأكد من الحذف؟")) await deleteDoc(doc(db, "sewing_orders", fbId)); };
+        window.deleteProductItem = async (id) => { if(confirm("هل أنت متأكد من حذف المنتج؟")) await deleteDoc(doc(db, "products", id)); };
+        window.deleteBannerItem = async (id) => { if(confirm("هل أنت متأكد من حذف البانر؟")) await deleteDoc(doc(db, "banners", id)); };
 
         window.renderAdminOrders = () => {
             document.getElementById('orders-tbody').innerHTML = window.siteState.orders.slice().reverse().map(o => `<tr>
+                <td><input type="checkbox" class="order-check" value="${o.fbId}"></td>
                 <td>${o.id}</td><td>${o.prodName}</td><td>${o.customer}<br>${o.phone}</td><td>${o.wilaya}<br>${o.address}</td><td>${o.total}</td>
                 <td><select onchange="changeOrderStatus('${o.fbId}', this.value)" class="status-badge ${o.status==='confirmed'?'status-confirmed':(o.status==='cancelled'?'status-cancelled':'status-pending')}"><option value="pending" ${o.status==='pending'?'selected':''}>مراجعة</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>مؤكد</option><option value="cancelled" ${o.status==='cancelled'?'selected':''}>ملغى</option></select></td>
-                <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.wilaya}', '${o.address}', '${o.total}', '${o.prodName}', '${o.prodPrice||'0'}', '${o.shipPrice||'0'}')"><i class="fas fa-print"></i></button></td>
+                <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.wilaya}', '${o.address}', '${o.total}', '${o.prodName}', '${o.prodPrice||'0'}', '${o.shipPrice||'0'}')"><i class="fas fa-print"></i></button>
+                <button class="action-btn" style="background:var(--danger);" onclick="deleteOrder('${o.fbId}')"><i class="fas fa-trash"></i></button></td>
             </tr>`).join('');
         };
         window.changeOrderStatus = async (fbId, newStatus) => { await updateDoc(doc(db, "orders", fbId), { status: newStatus }); };
@@ -1007,8 +1086,24 @@
             document.getElementById('sewing-tbody').innerHTML = window.siteState.sewingOrders.slice().reverse().map(o => `<tr>
                 <td>${o.id}</td><td>${o.img?`<img src="${o.img}" style="width:40px; border-radius:5px;">`:'-'}</td><td>${o.desc}</td><td>${o.customer}<br>${o.phone}</td><td>${o.wilaya}</td>
                 <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.wilaya}', '-', '-', 'طلب خياطة', '-', '-')"><i class="fas fa-print"></i></button>
-                <button class="action-btn" style="background:var(--danger);" onclick="deleteDoc(doc(db, 'sewing_orders', '${o.fbId}'))"><i class="fas fa-trash"></i></button></td>
+                <button class="action-btn" style="background:var(--danger);" onclick="deleteSewingOrder('${o.fbId}')"><i class="fas fa-trash"></i></button></td>
             </tr>`).join('');
+        };
+
+        // Export Orders to CSV
+        window.exportSelectedOrders = () => {
+            const checks = document.querySelectorAll('.order-check:checked');
+            if(checks.length === 0) return alert("يرجى تحديد الطلبيات أولاً");
+            let csv = '\uFEFFرقم الطلب,المنتج,الزبون,الهاتف,الولاية,العنوان,سعر المنتج,سعر التوصيل,الإجمالي,التاريخ\n';
+            checks.forEach(chk => {
+                const o = window.siteState.orders.find(x => x.fbId === chk.value);
+                if(o) csv += `${o.id},"${o.prodName}","${o.customer}","${o.phone}","${o.wilaya}","${o.address}","${o.prodPrice||0}","${o.shipPrice||0}","${o.total}","${new Date(o.date).toLocaleDateString()}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "orders_export.csv";
+            link.click();
         };
 
         window.renderAdminProducts = () => {
@@ -1020,7 +1115,7 @@
                     <div class="product-info"><strong>${p.name_ar}</strong><p>${p.price} DA | الكمية: ${p.stock}</p>
                     <div style="display:flex; justify-content:space-between; gap:5px; margin-top:5px;">
                         <button class="btn" style="background:var(--secondary); padding:5px;" onclick="editProduct('${p.id}')">تعديل</button>
-                        <button class="btn" style="background:var(--danger); padding:5px;" onclick="deleteDoc(doc(db, 'products', '${p.id}'))">حذف</button>
+                        <button class="btn" style="background:var(--danger); padding:5px;" onclick="deleteProductItem('${p.id}')">حذف</button>
                     </div>
                     </div>
                 </div>`
@@ -1029,7 +1124,7 @@
         
         window.openProductModal = () => {
             document.getElementById('prod-id').value = '';
-            document.getElementById('prod-img').value = ''; // تصفير حقل الملفات
+            document.getElementById('prod-img').value = ''; 
             document.getElementById('prod-name-ar').value = '';
             document.getElementById('prod-name-fr').value = '';
             document.getElementById('prod-price').value = '';
@@ -1067,7 +1162,6 @@
             const btn = document.getElementById('btn-save-prod'); btn.innerText="جاري الرفع..."; btn.disabled=true;
             const id = document.getElementById('prod-id').value;
             
-            // معالجة الصور المتعددة
             const files = document.getElementById('prod-img').files;
             let imagesArray = [];
             
@@ -1086,7 +1180,7 @@
             };
             
             if(imagesArray.length > 0) { 
-                productData.img = imagesArray[0]; // دعم التوافقية القديمة
+                productData.img = imagesArray[0]; 
                 productData.images = imagesArray;
             } else if(!id) { 
                 productData.img = 'https://via.placeholder.com/300';
@@ -1100,7 +1194,7 @@
         };
 
         window.renderAdminBanners = () => {
-            document.getElementById('admin-banners-list').innerHTML = window.siteState.banners.map(b => `<div style="position:relative; min-width:150px;"><img src="${b.img}" style="width:150px; height:80px; object-fit:cover; border-radius:5px;"><button class="action-btn" style="position:absolute; top:5px; right:5px; background:red;" onclick="deleteDoc(doc(db, 'banners', '${b.id}'))"><i class="fas fa-trash"></i></button></div>`).join('');
+            document.getElementById('admin-banners-list').innerHTML = window.siteState.banners.map(b => `<div style="position:relative; min-width:150px;"><img src="${b.img}" style="width:150px; height:80px; object-fit:cover; border-radius:5px;"><button class="action-btn" style="position:absolute; top:5px; right:5px; background:red;" onclick="deleteBannerItem('${b.id}')"><i class="fas fa-trash"></i></button></div>`).join('');
         };
         window.addBanner = async () => {
             const file = document.getElementById('banner-img').files[0]; if(!file) return alert("اختر صورة");
@@ -1140,16 +1234,18 @@
         window.parseCSV = () => {
             const file = document.getElementById('csv-file').files[0]; if(!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 const lines = e.target.result.split('\n'); let nw = [];
                 for(let i=1; i<lines.length; i++) {
                     const c = lines[i].split(',');
                     if(c.length >= 4) nw.push({ id: parseInt(c[0]), name_ar: c[1].trim(), name_fr: c[1].trim(), price_desk: parseInt(c[2]), price_home: parseInt(c[3]) });
                 }
-                if(nw.length>0) { localStorage.setItem('wilayasData', JSON.stringify(nw)); window.siteState.wilayas = nw; alert("تم التحديث محلياً"); }
+                if(nw.length>0) { 
+                    await setDoc(doc(db, "settings", "wilayas"), { data: nw });
+                    alert("تم رفع وتحديث أسعار الشحن للجميع بنجاح"); 
+                }
             }; reader.readAsText(file);
         };
-        function loadLocalWilayas() { const w = localStorage.getItem('wilayasData'); if(w) window.siteState.wilayas = JSON.parse(w); }
 
         window.saveSettings = async () => {
             let logoBase64 = null;
@@ -1159,7 +1255,8 @@
             const updates = {
                 about_ar: document.getElementById('set-about-ar').value, about_fr: document.getElementById('set-about-fr').value,
                 priv_ar: document.getElementById('set-priv-ar').value, priv_fr: document.getElementById('set-priv-fr').value,
-                whatsapp: document.getElementById('set-whatsapp').value, map: document.getElementById('set-map').value
+                whatsapp: document.getElementById('set-whatsapp').value, map: document.getElementById('set-map').value,
+                head: document.getElementById('set-head').value, top_ad: document.getElementById('set-top-ad').value, pop_ad: document.getElementById('set-pop-ad').value
             };
             if(logoBase64) updates.logo = logoBase64;
 
@@ -1181,7 +1278,7 @@
             document.getElementById('inv-tva').innerText = tva; document.getElementById('inv-gtotal').innerText = sub + tva;
         };
 
-        // Utils (Compression, QR, PDF)
+        // Utils (Compression, QR, PDF, Print)
         function compressImage(file, maxSize) {
             return new Promise((resolve) => {
                 const reader = new FileReader(); reader.readAsDataURL(file);
@@ -1213,7 +1310,18 @@
             new QRCode(document.getElementById("qrcode"), { text: `${id}|${name}|${phone}|${total}DA`, width: 100, height: 100 });
             openModal('print-label-modal');
         };
-        window.printElement = (id) => { window.print(); };
+
+        // Fix Print functionalities
+        window.printLabel = () => { 
+            document.body.classList.add('printing-label'); 
+            window.print(); 
+            document.body.classList.remove('printing-label'); 
+        };
+        window.printInvoice = () => { 
+            document.body.classList.add('printing-invoice'); 
+            window.print(); 
+            document.body.classList.remove('printing-invoice'); 
+        };
         
         window.downloadPDF = (elemId, filename) => {
             const element = document.getElementById(elemId);
