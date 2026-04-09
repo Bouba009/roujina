@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROUJÎNA | روجينا</title>
     
-    <!-- كود القراءة الفورية للثيم واللوغو لتجنب ظهور اللون الافتراضي -->
     <script>
         try {
             const localSettings = JSON.parse(localStorage.getItem('siteSettings'));
@@ -15,9 +14,7 @@
         } catch(e){}
     </script>
 
-    <!-- خطوط جوجل -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <!-- مكتبات خارجية -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -216,7 +213,7 @@
             body.printing-label #print-label-modal, body.printing-label #print-label-modal * { visibility: visible; display:block !important;}
             body.printing-label #print-label-modal { position: absolute; left: 0; top: 0; width: 100%; height:auto; background:white; }
             body.printing-label .close-modal, body.printing-label .btn { display: none !important; }
-            body.printing-label #label-print-area { margin:0 auto; border:none; }
+            body.printing-label #label-print-area { margin:0 auto; border: 2px solid #000 !important; border-radius: 10px !important; }
             
             body.printing-invoice #admin-panel, body.printing-invoice #tab-invoice, body.printing-invoice #print-area { display:block !important; visibility:visible;}
             body.printing-invoice #print-area { position: absolute; left: 0; top: 0; width: 100%; background:white; }
@@ -226,21 +223,16 @@
 </head>
 <body>
 
-    <!-- شاشة التحميل لمنع ظهور التصميم الافتراضي -->
     <div id="global-loader">
         <div class="global-spinner"></div>
         <h2 style="color:var(--primary); font-weight:bold; letter-spacing: 2px;">ROUJÎNA</h2>
     </div>
 
-    <!-- شريط الإعلان العلوي -->
     <div id="top-ad-banner">
         <i class="fas fa-times close-ad" onclick="this.parentElement.style.display='none'"></i>
         <div id="top-ad-content"></div>
     </div>
 
-    <!-- ==========================================
-         واجهة المستخدم (المتجر)
-    =========================================== -->
     <div id="frontend-app">
         <header>
             <div class="header-top">
@@ -321,11 +313,6 @@
     </div>
 
 
-    <!-- ==========================================
-         النوافذ المنبثقة المتجر
-    =========================================== -->
-    
-    <!-- إعلان منبثق (Pop Ad) -->
     <div class="modal" id="pop-ad-modal">
         <div class="modal-content" style="padding:0; background:transparent; box-shadow:none;">
             <i class="fas fa-times close-modal" style="color:white; right:-20px; top:-20px; font-size:28px;" onclick="closeModal('pop-ad-modal')"></i>
@@ -373,9 +360,6 @@
     <div class="modal" id="contact-modal"><div class="modal-content"><i class="fas fa-times close-modal" onclick="closeModal('contact-modal')"></i><h2 data-ar="اتصل بنا" data-fr="Contact">اتصل بنا</h2><p id="txt-contact" style="margin-top:10px; white-space:pre-wrap;"></p></div></div>
 
 
-    <!-- ==========================================
-         لوحة التحكم الإدارية
-    =========================================== -->
     <div id="admin-login-screen">
         <div class="login-box fade-in">
             <h2 style="color:var(--primary); margin-bottom: 20px;">دخول الإدارة | ROUJÎNA</h2>
@@ -394,6 +378,7 @@
                 <li onclick="switchAdminTab('tab-orders', this)"><i class="fas fa-shopping-cart"></i> الطلبيات العادية</li>
                 <li onclick="switchAdminTab('tab-sewing', this)"><i class="fas fa-cut"></i> طلبات التصميم</li>
                 <li onclick="switchAdminTab('tab-products', this)"><i class="fas fa-box-open"></i> إدارة المنتجات</li>
+                <li onclick="switchAdminTab('tab-categories', this)"><i class="fas fa-tags"></i> إدارة الفئات</li>
                 <li onclick="switchAdminTab('tab-banners', this)"><i class="fas fa-images"></i> البانرات</li>
                 <li onclick="switchAdminTab('tab-shipping', this)"><i class="fas fa-truck"></i> الولايات والشحن</li>
                 <li onclick="switchAdminTab('tab-invoice', this)"><i class="fas fa-file-invoice"></i> تحرير فاتورة</li>
@@ -410,7 +395,6 @@
                 <div style="font-weight:bold; color:var(--primary); font-size:14px;" id="live-time"></div>
             </div>
 
-            <!-- 1. Dash -->
             <div id="tab-dash" class="tab-section active">
                 <div class="dashboard-cards">
                     <div class="dash-card c-blue" onclick="switchAdminTab('tab-orders', document.querySelectorAll('.admin-nav li')[1])">
@@ -438,7 +422,6 @@
                 </div>
             </div>
 
-            <!-- 2. Orders -->
             <div id="tab-orders" class="tab-section">
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
                     <h3>إدارة الطلبيات</h3>
@@ -459,7 +442,6 @@
                 </div>
             </div>
 
-            <!-- 3. Sewing -->
             <div id="tab-sewing" class="tab-section">
                 <h3>طلبات التصميم والخياطة</h3>
                 <div class="admin-table-wrap" style="margin-top:15px;">
@@ -470,7 +452,6 @@
                 </div>
             </div>
 
-            <!-- 4. Products -->
             <div id="tab-products" class="tab-section">
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                     <h3>المنتجات المنشورة</h3>
@@ -479,7 +460,14 @@
                 <div class="products-grid" id="admin-products-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px,1fr));"></div>
             </div>
 
-            <!-- 5. Banners -->
+            <div id="tab-categories" class="tab-section">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                    <h3>الفئات المنشورة</h3>
+                    <button class="btn" style="width:150px; padding:8px;" onclick="openCategoryModal()">إضافة فئة +</button>
+                </div>
+                <div class="products-grid" id="admin-categories-grid" style="grid-template-columns: repeat(auto-fill, minmax(150px,1fr));"></div>
+            </div>
+
             <div id="tab-banners" class="tab-section">
                 <h3>البانرات وتغيير اللون</h3>
                 <div class="form-row" style="background:white; padding:15px; border-radius:10px; margin-top:15px; align-items:flex-end;">
@@ -500,7 +488,6 @@
                 </div>
             </div>
 
-            <!-- 6. Shipping CSV -->
             <div id="tab-shipping" class="tab-section">
                 <h3>إدراج أسعار الشحن (ملف CSV)</h3>
                 <p style="font-size:13px; color:#555; margin-bottom:10px;">سيتم رفع الأسعار لقاعدة البيانات لتظهر للجميع.</p>
@@ -509,7 +496,6 @@
                 <button class="btn" onclick="parseCSV()">رفع وتحديث للجميع</button>
             </div>
 
-            <!-- 7. Invoice -->
             <div id="tab-invoice" class="tab-section">
                 <button class="btn" onclick="window.printInvoice()" style="width:120px; margin-bottom:15px; padding:8px;"><i class="fas fa-print"></i> طباعة</button>
                 <button class="btn" onclick="downloadPDF('print-area', 'Facture_Roujina.pdf')" style="width:120px; margin-bottom:15px; padding:8px; background:#e67e22;"><i class="fas fa-download"></i> PDF</button>
@@ -548,7 +534,6 @@
                 </div>
             </div>
 
-            <!-- 8. Accounting -->
             <div id="tab-accounting" class="tab-section">
                 <h3>إدارتي المالية</h3>
                 <div class="form-row" style="background:white; padding:15px; border-radius:10px; margin-top:15px; align-items:flex-end;">
@@ -570,7 +555,6 @@
                 </div>
             </div>
 
-            <!-- 9. Settings -->
             <div id="tab-settings" class="tab-section">
                 <h3>إعدادات الموقع، الإعلانات والتطوير</h3>
                 <div style="background:white; padding:15px; border-radius:10px; margin-top:15px;">
@@ -611,7 +595,6 @@
         </div>
     </div>
 
-    <!-- Modals Admin -->
     <div class="modal" id="add-product-modal">
         <div class="modal-content">
             <i class="fas fa-times close-modal" onclick="closeModal('add-product-modal')"></i>
@@ -640,11 +623,24 @@
         </div>
     </div>
 
-    <!-- ملصق الشحن المعدل -->
+    <div class="modal" id="add-category-modal">
+        <div class="modal-content">
+            <i class="fas fa-times close-modal" onclick="closeModal('add-category-modal')"></i>
+            <h2 id="modal-category-title" style="margin-bottom:15px;">إضافة/تعديل فئة</h2>
+            <input type="hidden" id="cat-id">
+            <div class="form-group" style="margin-bottom:10px;"><label>صورة الفئة</label><input type="file" id="cat-img" class="form-control" accept="image/*"></div>
+            <div class="form-row">
+                <div><label>الاسم (عربي)</label><input type="text" id="cat-name-ar" class="form-control"></div>
+                <div><label>الاسم (فرنسي)</label><input type="text" id="cat-name-fr" class="form-control"></div>
+            </div>
+            <button class="btn" id="btn-save-cat" onclick="saveCategory()" style="margin-top:15px;">حفظ الفئة</button>
+        </div>
+    </div>
+
     <div class="modal" id="print-label-modal">
         <div class="modal-content" style="text-align:center;">
             <i class="fas fa-times close-modal" onclick="closeModal('print-label-modal')"></i>
-            <div id="label-print-area" style="padding:20px; background:#fff; width:100%; max-width:350px;">
+            <div id="label-print-area" style="padding:20px; background:#fff; width:100%; max-width:350px; border: 2px solid #000; border-radius: 10px; margin: 10px auto;">
                 <h2 style="margin-bottom:10px; font-family:sans-serif; color:var(--dark);">ROUJÎNA</h2>
                 <h4 style="margin-bottom:15px;">Bon de Livraison</h4>
                 <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>ID:</strong> <span id="lbl-id"></span></p>
@@ -657,7 +653,8 @@
                 <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Prix Prod:</strong> <span id="lbl-prodPrice"></span> DA</p>
                 <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Livraison:</strong> <span id="lbl-shipPrice"></span> DA</p>
                 <p style="text-align:left; font-size:16px; margin-bottom:5px; font-weight:bold;"><strong>Total:</strong> <span id="lbl-total"></span> DA</p>
-                <div id="qrcode" style="margin:15px auto; width:100px;"></div>
+                <div id="qrcode" style="margin:15px auto 5px auto; width:100px;"></div>
+                <p style="text-align:center; font-size:12px; font-weight:bold; margin-top:5px; color:#333;">www.roujina.com</p>
             </div>
             <div style="display:flex; gap:10px;">
                 <button class="btn" onclick="window.printLabel()"><i class="fas fa-print"></i> طباعة</button>
@@ -667,9 +664,6 @@
     </div>
 
 
-    <!-- ==========================================
-         JavaScript Code & Firebase Realtime
-    =========================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
         import { getFirestore, collection, addDoc, doc, setDoc, deleteDoc, updateDoc, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
@@ -692,7 +686,7 @@
         // Global State (Synced with Firebase)
         window.siteState = {
             lang: 'ar',
-            products: [], banners: [], orders: [], sewingOrders: [], accounting: [],
+            products: [], banners: [], orders: [], sewingOrders: [], accounting: [], categories: [],
             wilayas: [
                 {id:16, name_ar:'الجزائر', name_fr:'Alger', price_desk:400, price_home:600},
                 {id:9, name_ar:'البليدة', name_fr:'Blida', price_desk:300, price_home:500}
@@ -804,6 +798,13 @@
 
         // --- Firebase Realtime Listeners ---
         function setupFirebaseListeners() {
+            // جلب الفئات
+            onSnapshot(collection(db, "categories"), (snap) => {
+                window.siteState.categories = [];
+                snap.forEach(doc => window.siteState.categories.push({ ...doc.data(), id: doc.id }));
+                if(window.location.hash === '' || window.location.hash.startsWith('#product')) renderCategories();
+                if(sessionStorage.getItem('adminLogged')) renderAdminCategories();
+            });
             onSnapshot(collection(db, "products"), (snap) => {
                 window.siteState.products = [];
                 snap.forEach(doc => window.siteState.products.push({ ...doc.data(), id: doc.id }));
@@ -874,7 +875,12 @@
 
         // --- Frontend ---
         function renderCategories() {
-            const cats = [{ar:'ملابس نسائية', fr:'Femmes', img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=150'},{ar:'ملابس أطفال', fr:'Enfants', img:'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=150'},{ar:'أفرشة', fr:'Literie', img:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=150'},{ar:'اكسسوارات', fr:'Accessoires', img:'https://images.unsplash.com/photo-1509319117193-57bab727e09d?w=150'},{ar:'خياطة', fr:'Couture', img:'https://images.unsplash.com/photo-1584286595398-a59f21d313f5?w=150'}];
+            let cats = [];
+            if(window.siteState.categories && window.siteState.categories.length > 0) {
+                cats = window.siteState.categories.map(c => ({ar: c.name_ar, fr: c.name_fr, img: c.img}));
+            } else {
+                cats = [{ar:'ملابس نسائية', fr:'Femmes', img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=150'},{ar:'ملابس أطفال', fr:'Enfants', img:'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=150'},{ar:'أفرشة', fr:'Literie', img:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=150'},{ar:'اكسسوارات', fr:'Accessoires', img:'https://images.unsplash.com/photo-1509319117193-57bab727e09d?w=150'},{ar:'خياطة', fr:'Couture', img:'https://images.unsplash.com/photo-1584286595398-a59f21d313f5?w=150'}];
+            }
             document.getElementById('categories-container').innerHTML = cats.map(c => `<div class="category-item" onclick="filterFrontend('${c.ar}')"><img src="${c.img}"><p>${window.siteState.lang === 'ar' ? c.ar : c.fr}</p></div>`).join('');
         }
 
@@ -1057,7 +1063,7 @@
                 sessionStorage.setItem('adminLogged', 'true');
                 document.getElementById('admin-login-screen').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'flex';
-                updateAdminDashboard(); renderAdminProducts(); renderAdminBanners(); renderAccounting();
+                updateAdminDashboard(); renderAdminProducts(); renderAdminBanners(); renderAccounting(); renderAdminCategories();
             } else { document.getElementById('login-error').style.display = 'block'; }
         };
         window.logoutAdmin = () => { sessionStorage.removeItem('adminLogged'); location.reload(); };
@@ -1087,7 +1093,6 @@
             } catch(e) {}
         }
 
-        // Functions exposed globally to fix scoping issues safely
         window.deleteOrder = async (fbId) => { if(confirm("هل أنت متأكد من الحذف؟")) await deleteDoc(doc(db, "orders", fbId)); };
         window.deleteSewingOrder = async (fbId) => { if(confirm("هل أنت متأكد من الحذف؟")) await deleteDoc(doc(db, "sewing_orders", fbId)); };
         window.deleteProductItem = async (id) => { if(confirm("هل أنت متأكد من حذف المنتج؟")) await deleteDoc(doc(db, "products", id)); };
@@ -1107,10 +1112,11 @@
             document.getElementById('lbl-shipPrice').innerText = o.shipPrice || 0;
             document.getElementById('lbl-total').innerText = o.total || 0;
 
-            openModal('print-label-modal'); // تم النقل للأعلى لحل مشكلة الإخفاء
+            openModal('print-label-modal');
             document.getElementById('qrcode').innerHTML = '';
             try {
-                new QRCode(document.getElementById("qrcode"), { text: `${o.id||'-'}|${o.customer||'-'}|${o.phone||'-'}|${o.total||0}DA`, width: 100, height: 100 });
+                // وضع رابط الموقع في الـ QR كود كما تم طلبه
+                new QRCode(document.getElementById("qrcode"), { text: `https://www.roujina.com`, width: 100, height: 100 });
             } catch(e) { console.error(e); }
         };
 
@@ -1127,10 +1133,11 @@
             document.getElementById('lbl-shipPrice').innerText = '-';
             document.getElementById('lbl-total').innerText = '-';
 
-            openModal('print-label-modal'); // تم النقل للأعلى لحل مشكلة الإخفاء
+            openModal('print-label-modal');
             document.getElementById('qrcode').innerHTML = '';
             try {
-                new QRCode(document.getElementById("qrcode"), { text: `${o.id||'-'}|${o.customer||'-'}|${o.phone||'-'}`, width: 100, height: 100 });
+                // وضع رابط الموقع في الـ QR كود
+                new QRCode(document.getElementById("qrcode"), { text: `https://www.roujina.com`, width: 100, height: 100 });
             } catch(e) { console.error(e); }
         };
 
@@ -1182,6 +1189,61 @@
             link.click();
         };
 
+        // --- Category Logic ---
+        window.renderAdminCategories = () => {
+            document.getElementById('admin-categories-grid').innerHTML = window.siteState.categories.map(c => `
+            <div class="product-card" style="border:1px solid #ddd; text-align:center;">
+                <img src="${c.img}" style="width:100%; aspect-ratio:1/1; object-fit:cover;">
+                <div class="product-info">
+                    <strong>${c.name_ar}</strong><p>${c.name_fr}</p>
+                    <div style="display:flex; justify-content:space-between; gap:5px; margin-top:10px;">
+                        <button class="btn" style="background:var(--secondary); padding:5px;" onclick="window.editCategory('${c.id}')">تعديل</button>
+                        <button class="btn" style="background:var(--danger); padding:5px;" onclick="window.deleteCategoryItem('${c.id}')">حذف</button>
+                    </div>
+                </div>
+            </div>`).join('');
+        };
+
+        window.openCategoryModal = () => {
+            document.getElementById('cat-id').value = '';
+            document.getElementById('cat-img').value = ''; 
+            document.getElementById('cat-name-ar').value = '';
+            document.getElementById('cat-name-fr').value = '';
+            document.getElementById('btn-save-cat').innerText = 'حفظ الفئة';
+            openModal('add-category-modal');
+        };
+
+        window.editCategory = (id) => {
+            const c = window.siteState.categories.find(x => x.id === id);
+            if(!c) return;
+            document.getElementById('cat-id').value = c.id;
+            document.getElementById('cat-img').value = ''; 
+            document.getElementById('cat-name-ar').value = c.name_ar || '';
+            document.getElementById('cat-name-fr').value = c.name_fr || '';
+            document.getElementById('btn-save-cat').innerText = 'تحديث الفئة';
+            openModal('add-category-modal');
+        };
+
+        window.saveCategory = async () => {
+            const btn = document.getElementById('btn-save-cat'); btn.innerText="جاري الرفع..."; btn.disabled=true;
+            const id = document.getElementById('cat-id').value;
+            const file = document.getElementById('cat-img').files[0];
+            let base64Img = null;
+            if(file) base64Img = await compressImage(file, 400);
+
+            const catData = { name_ar: document.getElementById('cat-name-ar').value, name_fr: document.getElementById('cat-name-fr').value };
+            if(base64Img) catData.img = base64Img;
+            else if(!id) catData.img = 'https://via.placeholder.com/150';
+
+            if(id) { await updateDoc(doc(db, "categories", id), catData); } 
+            else { await addDoc(collection(db, "categories"), catData); }
+
+            closeModal('add-category-modal'); btn.innerText="حفظ الفئة"; btn.disabled=false;
+        };
+
+        window.deleteCategoryItem = async (id) => { if(confirm("هل أنت متأكد من حذف الفئة؟")) await deleteDoc(doc(db, "categories", id)); };
+
+        // --- Product Logic ---
         window.renderAdminProducts = () => {
             document.getElementById('admin-products-grid').innerHTML = window.siteState.products.map(p => {
                 let thumbImg = p.images && p.images.length > 0 ? p.images[0] : p.img;
@@ -1205,7 +1267,13 @@
             document.getElementById('prod-name-fr').value = '';
             document.getElementById('prod-price').value = '';
             document.getElementById('prod-old-price').value = '';
-            document.getElementById('prod-category').value = 'ملابس نسائية';
+            
+            // تحديث قائمة الفئات ديناميكياً
+            const catSelect = document.getElementById('prod-category');
+            if(window.siteState.categories && window.siteState.categories.length > 0) {
+                catSelect.innerHTML = window.siteState.categories.map(c => `<option value="${c.name_ar}">${c.name_ar}</option>`).join('') + `<option value="اخرى">اخرى</option>`;
+            }
+
             document.getElementById('prod-sizes').value = '';
             document.getElementById('prod-colors').value = '';
             document.getElementById('prod-stock').value = '10';
@@ -1224,7 +1292,14 @@
             document.getElementById('prod-name-fr').value = p.name_fr || '';
             document.getElementById('prod-price').value = p.price || '';
             document.getElementById('prod-old-price').value = p.oldPrice || '';
+
+            // تحديث قائمة الفئات ديناميكياً
+            const catSelect = document.getElementById('prod-category');
+            if(window.siteState.categories && window.siteState.categories.length > 0) {
+                catSelect.innerHTML = window.siteState.categories.map(c => `<option value="${c.name_ar}">${c.name_ar}</option>`).join('') + `<option value="اخرى">اخرى</option>`;
+            }
             document.getElementById('prod-category').value = p.category || 'اخرى';
+
             document.getElementById('prod-sizes').value = p.sizes || '';
             document.getElementById('prod-colors').value = p.colors || '';
             document.getElementById('prod-stock').value = p.stock || '0';
