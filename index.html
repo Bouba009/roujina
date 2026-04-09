@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -45,6 +46,18 @@
 
         .fade-in { animation: fadeIn 0.5s ease-out; }
 
+        /* شاشة التحميل الافتراضية لمنع ظهور الألوان الافتراضية */
+        #global-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: var(--white); z-index: 99999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .global-spinner {
+            border: 5px solid #f3f3f3; border-top: 5px solid var(--primary);
+            border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+
         /* --- Header --- */
         header { background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; }
@@ -75,7 +88,8 @@
 
         /* --- Products Grid (2 per row) --- */
         .products-section { padding: 20px 5%; }
-        .section-title { text-align: center; font-size: 22px; margin-bottom: 25px; position: relative; display: inline-block; left: 50%; transform: translateX(-50%); }
+        /* تعديل توسيط عنوان المنتجات */
+        .section-title { text-align: center; font-size: 22px; margin: 0 auto 25px auto; position: relative; display: block; width: fit-content; }
         .section-title::after { content: ''; width: 50%; height: 3px; background: var(--primary); position: absolute; bottom: -5px; left: 25%; }
         
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
@@ -87,7 +101,7 @@
         .old-price { text-decoration: line-through; color: #999; font-size: 13px; margin-right: 5px; }
         .badge-featured { position:absolute; top:8px; right:8px; background:var(--secondary); color:white; padding:3px 8px; border-radius:15px; font-size:11px; z-index:10;}
 
-        /* --- Details Page --- */
+        /* --- Details Page & Pro Checkout Form --- */
         .product-details-page { display: none; padding: 20px 5%; background: var(--white); min-height: 80vh; }
         .details-container { display: flex; flex-direction:column; gap: 20px; }
         @media(min-width:768px){ .details-container {flex-direction:row;} .products-grid{ grid-template-columns: repeat(4, 1fr); gap:20px; } }
@@ -95,12 +109,21 @@
         .details-img-wrap img { width: 100%; max-width:400px; border-radius: 10px; aspect-ratio:1/1; object-fit:cover;}
         .details-info { flex: 1; }
         
-        .order-form { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid #eee; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size:14px; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; outline: none; font-family:inherit;}
-        .btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-size: 16px; font-weight:bold; cursor: pointer; transition: var(--transition); }
-        .btn:hover { background: var(--dark); }
+        /* استمارة الطلب الاحترافية والمقاسات */
+        .order-form { background: #fff; padding: 25px; border-radius: 15px; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
+        .pro-form-group { margin-bottom: 15px; }
+        .pro-form-group label { display: block; margin-bottom: 8px; font-weight: bold; font-size:14px; color: #444; }
+        .pro-input { width: 100%; padding: 12px 15px; border: 2px solid #eee; border-radius: 8px; outline: none; transition: var(--transition); font-family: inherit; font-size: 14px; background: #fafafa; }
+        .pro-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(142,68,173,0.1); }
+        
+        .variant-selector { display: flex; gap: 10px; flex-wrap: wrap; }
+        .variant-label { cursor: pointer; user-select: none; }
+        .variant-label input { display: none; }
+        .variant-box { padding: 8px 18px; border: 2px solid #eee; border-radius: 8px; background: #fff; transition: var(--transition); font-weight: bold; color: #555; }
+        .variant-label input:checked + .variant-box { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+        .btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight:bold; cursor: pointer; transition: var(--transition); box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .btn:hover { background: var(--dark); transform: translateY(-2px); }
 
         /* --- Floating Buttons --- */
         .fab-container { position: fixed; bottom: 30px; left: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
@@ -177,6 +200,8 @@
         .form-row > div { flex: 1; min-width:150px;}
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; outline: none; font-family:inherit;}
 
         /* Print Settings */
         @media print {
@@ -191,6 +216,12 @@
     </style>
 </head>
 <body>
+
+    <!-- شاشة التحميل لمنع ظهور التصميم الافتراضي -->
+    <div id="global-loader">
+        <div class="global-spinner"></div>
+        <h2 style="color:var(--primary); font-weight:bold; letter-spacing: 2px;">ROUJÎNA</h2>
+    </div>
 
     <!-- ==========================================
          واجهة المستخدم (المتجر)
@@ -283,20 +314,20 @@
             <i class="fas fa-times close-modal" onclick="closeModal('sewing-modal')"></i>
             <h2 style="text-align:center; color:var(--primary); margin-bottom: 15px;" data-ar="خياطة حسب طلبك" data-fr="Couture sur mesure">خياطة حسب طلبك</h2>
             <form id="sewing-form" onsubmit="submitSewingOrder(event)">
-                <div class="form-group">
-                    <label data-ar="صورة التصميم (اختياري)" data-fr="Image du design">صورة التصميم (اختياري)</label>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label style="display:block;margin-bottom:5px;" data-ar="صورة التصميم (اختياري)" data-fr="Image du design">صورة التصميم (اختياري)</label>
                     <input type="file" class="form-control" id="sewing-img" accept="image/*">
                 </div>
-                <div class="form-group">
-                    <label data-ar="وصف الطلب / المقاسات" data-fr="Description / Tailles">وصف الطلب / المقاسات</label>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label style="display:block;margin-bottom:5px;" data-ar="وصف الطلب / المقاسات" data-fr="Description / Tailles">وصف الطلب / المقاسات</label>
                     <textarea class="form-control" id="sewing-desc" rows="3" required></textarea>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label data-ar="الاسم" data-fr="Nom">الاسم</label><input type="text" class="form-control" id="sewing-name" required></div>
-                    <div class="form-group"><label data-ar="الهاتف" data-fr="Téléphone">الهاتف</label><input type="tel" class="form-control" id="sewing-phone" required></div>
+                    <div class="form-group"><label style="display:block;margin-bottom:5px;" data-ar="الاسم" data-fr="Nom">الاسم</label><input type="text" class="form-control" id="sewing-name" required></div>
+                    <div class="form-group"><label style="display:block;margin-bottom:5px;" data-ar="الهاتف" data-fr="Téléphone">الهاتف</label><input type="tel" class="form-control" id="sewing-phone" required></div>
                 </div>
-                <div class="form-group">
-                    <label data-ar="الولاية" data-fr="Wilaya">الولاية</label>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label style="display:block;margin-bottom:5px;" data-ar="الولاية" data-fr="Wilaya">الولاية</label>
                     <select class="form-control" id="sewing-wilaya" required></select>
                 </div>
                 <button type="submit" class="btn" id="sewing-submit-btn" data-ar="تأكيد الطلب" data-fr="Confirmer">تأكيد الطلب</button>
@@ -324,8 +355,8 @@
     <div id="admin-login-screen">
         <div class="login-box fade-in">
             <h2 style="color:var(--primary); margin-bottom: 20px;">دخول الإدارة | ROUJÎNA</h2>
-            <div class="form-group"><input type="text" id="admin-user" class="form-control" placeholder="اسم المستخدم"></div>
-            <div class="form-group"><input type="password" id="admin-pass" class="form-control" placeholder="كلمة المرور"></div>
+            <div class="form-group" style="margin-bottom:15px;"><input type="text" id="admin-user" class="form-control" placeholder="اسم المستخدم"></div>
+            <div class="form-group" style="margin-bottom:15px;"><input type="password" id="admin-pass" class="form-control" placeholder="كلمة المرور"></div>
             <button class="btn" onclick="verifyAdmin()">تسجيل الدخول</button>
             <p id="login-error" style="color:red; margin-top:10px; display:none;">بيانات غير صحيحة!</p>
         </div>
@@ -420,7 +451,8 @@
                 <div class="form-row" style="background:white; padding:15px; border-radius:10px; margin-top:15px; align-items:flex-end;">
                     <div><label>صورة البانر</label><input type="file" id="banner-img" class="form-control" accept="image/*"></div>
                     <div><label>رابط التحويل</label>
-                        <select id="banner-link" class="form-control"><option value="">بدون رابط</option><option value="#sewing">مودال الخياطة</option></select>
+                        <!-- تم تغيير الـ select إلى حقل إدخال رابط احترافي -->
+                        <input type="text" id="banner-link" class="form-control" placeholder="أدخل الرابط (اختياري)">
                     </div>
                     <div><button class="btn" onclick="addBanner()">إضافة البانر</button></div>
                 </div>
@@ -511,7 +543,7 @@
                     <div class="form-row">
                         <div><label>لوغو الموقع (صورة)</label><input type="file" id="set-logo" class="form-control" accept="image/*"></div>
                     </div>
-                    <label>Meta Pixel Code</label><textarea id="set-pixel" class="form-control" rows="2"></textarea>
+                    <label style="margin-top:10px;display:block;">Meta Pixel Code</label><textarea id="set-pixel" class="form-control" rows="2"></textarea>
                     
                     <h4 style="margin-top:15px;">النصوص والروابط</h4>
                     <div class="form-row">
@@ -539,7 +571,8 @@
             <i class="fas fa-times close-modal" onclick="closeModal('add-product-modal')"></i>
             <h2 id="modal-product-title" style="margin-bottom:15px;">إضافة/تعديل منتج</h2>
             <input type="hidden" id="prod-id">
-            <div class="form-group"><label>صورة المنتج (تضغط آليا)</label><input type="file" id="prod-img" class="form-control" accept="image/*"></div>
+            <!-- إضافة دعم الصور المتعددة multiple -->
+            <div class="form-group" style="margin-bottom:10px;"><label>صور المنتج (يمكنك اختيار عدة صور)</label><input type="file" id="prod-img" class="form-control" accept="image/*" multiple></div>
             <div class="form-row">
                 <div><label>الاسم (عربي)</label><input type="text" id="prod-name-ar" class="form-control"></div>
                 <div><label>الاسم (فرنسي)</label><input type="text" id="prod-name-fr" class="form-control"></div>
@@ -556,8 +589,8 @@
                 <div><label>الفئة</label><select id="prod-category" class="form-control"><option>ملابس نسائية</option><option>ملابس أطفال</option><option>أفرشة</option><option>اكسسوارات</option><option>خياطة</option><option>اخرى</option></select></div>
                 <div><label>الكمية المتوفرة</label><input type="number" id="prod-stock" class="form-control" value="10"></div>
             </div>
-            <div class="form-group"><label>الوصف</label><textarea id="prod-desc" class="form-control"></textarea></div>
-            <div class="form-group"><label><input type="checkbox" id="prod-featured"> منتج مميز</label></div>
+            <div class="form-group" style="margin-bottom:10px;"><label>الوصف</label><textarea id="prod-desc" class="form-control"></textarea></div>
+            <div class="form-group" style="margin-bottom:15px;"><label><input type="checkbox" id="prod-featured"> منتج مميز</label></div>
             <button class="btn" id="btn-save-prod" onclick="saveProduct()">حفظ المنتج</button>
         </div>
     </div>
@@ -630,14 +663,20 @@
 
         setInterval(() => { if(document.getElementById('live-time')) document.getElementById('live-time').innerText = new Date().toLocaleString('ar-DZ'); }, 1000);
 
-        // Translations
+        // Translations Fix
         window.toggleLanguage = () => {
             window.siteState.lang = window.siteState.lang === 'ar' ? 'fr' : 'ar';
             document.getElementById('lang-toggle').innerText = window.siteState.lang === 'ar' ? 'FR' : 'AR';
             document.dir = window.siteState.lang === 'ar' ? 'rtl' : 'ltr';
             document.querySelectorAll('[data-ar]').forEach(el => el.innerText = el.getAttribute(`data-${window.siteState.lang}`));
-            renderFrontendProducts();
+            renderCategories(); // تحديث الفئات لغة
+            renderFrontendProducts(); // تحديث المنتجات
             updateStaticTexts();
+            
+            // تحديث استمارة الطلب إذا كانت مفتوحة
+            if(window.location.hash.startsWith('#product-')){
+                renderProductDetails(window.location.hash.replace('#product-', ''));
+            }
         };
 
         function updateStaticTexts(){
@@ -659,13 +698,19 @@
             localStorage.setItem('siteSettings', JSON.stringify(window.siteState.settings));
         }
 
-        // Router
+        // Router & Global Loader Fix
         window.addEventListener('hashchange', router);
         window.addEventListener('load', async () => {
             loadLocalWilayas();
             setupFirebaseListeners();
             await recordVisit();
             router();
+            
+            // إخفاء شاشة التحميل بعد الانتهاء
+            setTimeout(() => {
+                document.getElementById('global-loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('global-loader').style.display = 'none', 500);
+            }, 800);
         });
 
         function router() {
@@ -764,7 +809,7 @@
         function renderBanners() {
             const slider = document.getElementById('hero-slider');
             if(window.siteState.banners.length === 0) { slider.innerHTML = `<div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80')"></div>`; return; }
-            slider.innerHTML = window.siteState.banners.map((b, i) => `<div class="slide ${i===0?'active':''}" style="background-image:url('${b.img}')" onclick="window.location.href='${b.link}'"></div>`).join('');
+            slider.innerHTML = window.siteState.banners.map((b, i) => `<div class="slide ${i===0?'active':''}" style="background-image:url('${b.img}')" onclick="${b.link ? `window.location.href='${b.link}'` : ''}"></div>`).join('');
             let current = 0; const slides = document.querySelectorAll('.slide');
             if(window.sliderInt) clearInterval(window.sliderInt);
             window.sliderInt = setInterval(() => {
@@ -781,48 +826,81 @@
             
             if(prods.length === 0) { document.getElementById('products-grid').innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1;">لا توجد منتجات حالياً.</p>'; return; }
             
-            document.getElementById('products-grid').innerHTML = prods.map(p => `
+            document.getElementById('products-grid').innerHTML = prods.map(p => {
+                // التأكد من عرض الصورة الأساسية إذا كان هناك أكثر من صورة
+                let thumbImg = p.images && p.images.length > 0 ? p.images[0] : p.img;
+                return `
                 <div class="product-card" onclick="window.location.hash='#product-${p.id}'">
                     ${p.featured ? `<div class="badge-featured">${window.siteState.lang==='ar'?'مميز':'Spécial'}</div>` : ''}
-                    <img src="${p.img}" class="product-img">
+                    <img src="${thumbImg}" class="product-img">
                     <div class="product-info">
                         <div class="product-title">${window.siteState.lang === 'ar' ? (p.name_ar||'') : (p.name_fr||'')}</div>
                         <div>${p.oldPrice ? `<span class="old-price">${p.oldPrice} DA</span>` : ''} <span class="product-price">${p.price} DA</span></div>
                     </div>
-                </div>`).join('');
+                </div>`
+            }).join('');
         };
         window.frontendSearch = () => renderFrontendProducts(document.getElementById('search-input').value);
         window.filterFrontend = (cat) => renderFrontendProducts(cat);
 
-        // Product Details & Checkout
+        // Product Details & Pro Checkout Form
         function renderProductDetails(id) {
             const p = window.siteState.products.find(x => x.id === id);
             if(!p) { window.location.hash=''; return; }
             const name = window.siteState.lang === 'ar' ? p.name_ar : p.name_fr;
-            let wilayasOpts = '<option value="">-- اختر --</option>' + window.siteState.wilayas.map(w => `<option value="${w.id}" data-desk="${w.price_desk}" data-home="${w.price_home}">${w.id} - ${window.siteState.lang==='ar'?w.name_ar:w.name_fr}</option>`).join('');
+            let wilayasOpts = `<option value="">-- ${window.siteState.lang==='ar'?'اختر':'Choisir'} --</option>` + window.siteState.wilayas.map(w => `<option value="${w.id}" data-desk="${w.price_desk}" data-home="${w.price_home}">${w.id} - ${window.siteState.lang==='ar'?w.name_ar:w.name_fr}</option>`).join('');
             
-            let sizesHtml = p.sizes ? `<div class="form-group"><label>المقاس:</label><select id="chk-size" class="form-control">${p.sizes.split(',').map(s=>`<option value="${s.trim()}">${s.trim()}</option>`).join('')}</select></div>` : '';
-            let colorsHtml = p.colors ? `<div class="form-group"><label>اللون:</label><select id="chk-color" class="form-control">${p.colors.split(',').map(c=>`<option value="${c.trim()}">${c.trim()}</option>`).join('')}</select></div>` : '';
+            // المقاسات والالوان بتصميم احترافي (أزرار راديو مخفية بدل القائمة المنسدلة)
+            let sizesHtml = p.sizes ? `<div class="pro-form-group"><label>${window.siteState.lang==='ar'?'المقاس:':'Taille:'}</label><div class="variant-selector">${p.sizes.split(',').map((s,i)=>`<label class="variant-label"><input type="radio" name="chk-size" value="${s.trim()}" ${i===0?'checked':''}><div class="variant-box">${s.trim()}</div></label>`).join('')}</div></div>` : '';
+            
+            let colorsHtml = p.colors ? `<div class="pro-form-group"><label>${window.siteState.lang==='ar'?'اللون:':'Couleur:'}</label><div class="variant-selector">${p.colors.split(',').map((c,i)=>`<label class="variant-label"><input type="radio" name="chk-color" value="${c.trim()}" ${i===0?'checked':''}><div class="variant-box" style="border-radius:20px;">${c.trim()}</div></label>`).join('')}</div></div>` : '';
+
+            // صور متعددة
+            let mainImg = p.images && p.images.length > 0 ? p.images[0] : p.img;
+            let galleryHtml = '';
+            if (p.images && p.images.length > 1) {
+                galleryHtml = `<div style="display:flex; gap:10px; margin-top:15px; overflow-x:auto; justify-content:center;">
+                    ${p.images.map(img => `<img src="${img}" style="width:70px; height:70px; border-radius:8px; object-fit:cover; cursor:pointer; border:2px solid transparent; transition:0.3s;" onmouseover="document.getElementById('main-prod-img').src=this.src; this.style.borderColor='var(--primary)';" onmouseout="this.style.borderColor='transparent';">`).join('')}
+                </div>`;
+            }
 
             document.getElementById('single-product-container').innerHTML = `
-                <div class="details-img-wrap"><img src="${p.img}"></div>
+                <div class="details-img-wrap">
+                    <img id="main-prod-img" src="${mainImg}">
+                    ${galleryHtml}
+                </div>
                 <div class="details-info">
                     <h1 style="color:var(--primary); margin-bottom:10px;">${name}</h1>
-                    <p style="font-size:22px; font-weight:bold; margin-bottom:10px;">${p.price} DA</p>
-                    <p style="color:#555; line-height:1.6; margin-bottom:15px;">${p.desc||''}</p>
+                    <p style="font-size:24px; font-weight:bold; margin-bottom:10px;">${p.price} DA</p>
+                    <p style="color:#666; line-height:1.6; margin-bottom:20px;">${p.desc||''}</p>
                     <div class="order-form">
-                        <h3 style="margin-bottom:15px; border-bottom:2px solid var(--primary); padding-bottom:5px;">استمارة الطلب</h3>
+                        <h3 style="margin-bottom:20px; color:var(--dark); text-align:center;">${window.siteState.lang==='ar'?'استمارة الطلب':'Formulaire de commande'}</h3>
                         ${sizesHtml} ${colorsHtml}
-                        <div class="form-group"><input type="text" id="chk-name" class="form-control" placeholder="الاسم الكريم" required></div>
-                        <div class="form-group"><input type="tel" id="chk-phone" class="form-control" placeholder="رقم الهاتف" required></div>
-                        <div class="form-group"><select id="chk-wilaya" class="form-control" onchange="calcCheckoutTotal(${p.price})" required>${wilayasOpts}</select></div>
-                        <div class="form-group"><input type="text" id="chk-address" class="form-control" placeholder="العنوان البلدي" required></div>
-                        <div class="form-group"><label>نوع التوصيل</label><select id="chk-delivery" class="form-control" onchange="calcCheckoutTotal(${p.price})"><option value="desk">إلى مكتب التوصيل</option><option value="home">إلى باب المنزل</option></select></div>
-                        <div style="background:#fff; padding:10px; border-radius:5px; margin-bottom:15px; border:1px dashed #ccc; font-size:14px;">
-                            <p>المنتج: ${p.price} DA | التوصيل: <span id="chk-shipping-price">0</span> DA</p>
-                            <h3 style="color:var(--primary); margin-top:5px;">الإجمالي: <span id="chk-total-price">${p.price}</span> DA</h3>
+                        <div class="pro-form-group">
+                            <input type="text" id="chk-name" class="pro-input" placeholder="${window.siteState.lang==='ar'?'الاسم الكريم':'Nom complet'}" required>
                         </div>
-                        <button class="btn" onclick="submitProductOrder('${p.id}', '${p.name_ar}', ${p.price})">تأكيد الطلب</button>
+                        <div class="pro-form-group">
+                            <input type="tel" id="chk-phone" class="pro-input" placeholder="${window.siteState.lang==='ar'?'رقم الهاتف':'Numéro de téléphone'}" required>
+                        </div>
+                        <div class="pro-form-group">
+                            <select id="chk-wilaya" class="pro-input" onchange="calcCheckoutTotal(${p.price})" required>${wilayasOpts}</select>
+                        </div>
+                        <div class="pro-form-group">
+                            <input type="text" id="chk-address" class="pro-input" placeholder="${window.siteState.lang==='ar'?'العنوان البلدي':'Adresse'}" required>
+                        </div>
+                        <div class="pro-form-group">
+                            <label>${window.siteState.lang==='ar'?'نوع التوصيل':'Type de livraison'}</label>
+                            <select id="chk-delivery" class="pro-input" onchange="calcCheckoutTotal(${p.price})">
+                                <option value="desk">${window.siteState.lang==='ar'?'إلى مكتب التوصيل':'Point de relais'}</option>
+                                <option value="home">${window.siteState.lang==='ar'?'إلى باب المنزل':'À domicile'}</option>
+                            </select>
+                        </div>
+                        <div style="background:#f4f6f9; padding:15px; border-radius:8px; margin-bottom:20px; font-size:15px; color:#333;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${window.siteState.lang==='ar'?'المنتج':'Produit'}:</span> <strong>${p.price} DA</strong></div>
+                            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #ddd; padding-bottom:5px; margin-bottom:5px;"><span>${window.siteState.lang==='ar'?'التوصيل':'Livraison'}:</span> <strong><span id="chk-shipping-price">0</span> DA</strong></div>
+                            <div style="display:flex; justify-content:space-between; font-size:18px; color:var(--primary); font-weight:bold; margin-top:10px;"><span>${window.siteState.lang==='ar'?'الإجمالي':'Total'}:</span> <span><span id="chk-total-price">${p.price}</span> DA</span></div>
+                        </div>
+                        <button class="btn" onclick="submitProductOrder('${p.id}', '${p.name_ar}', ${p.price})">${window.siteState.lang==='ar'?'تأكيد الطلب':'Confirmer'}</button>
                     </div>
                 </div>`;
         }
@@ -840,9 +918,14 @@
             const phone = document.getElementById('chk-phone').value;
             const wilaya = document.getElementById('chk-wilaya');
             const address = document.getElementById('chk-address').value;
-            const size = document.getElementById('chk-size') ? document.getElementById('chk-size').value : '';
-            const color = document.getElementById('chk-color') ? document.getElementById('chk-color').value : '';
-            if(!name || !phone || !wilaya.value || !address) return alert("يرجى ملء جميع الحقول");
+            
+            // قراءة المقاس واللون من أزرار الراديو
+            const sizeEl = document.querySelector('input[name="chk-size"]:checked');
+            const colorEl = document.querySelector('input[name="chk-color"]:checked');
+            const size = sizeEl ? sizeEl.value : '';
+            const color = colorEl ? colorEl.value : '';
+            
+            if(!name || !phone || !wilaya.value || !address) return alert(window.siteState.lang==='ar'?"يرجى ملء جميع الحقول":"Veuillez remplir tous les champs");
 
             const shipPrice = document.getElementById('chk-shipping-price').innerText;
             const total = document.getElementById('chk-total-price').innerText;
@@ -870,7 +953,7 @@
             if(document.getElementById('sewing-img').files.length > 0) base64Img = await compressImage(document.getElementById('sewing-img').files[0], 600);
             const order = { id: 'S-'+Date.now().toString().slice(-6), type: 'sewing', desc: document.getElementById('sewing-desc').value, customer: document.getElementById('sewing-name').value, phone: document.getElementById('sewing-phone').value, wilaya: document.getElementById('sewing-wilaya').value, img: base64Img, status: 'pending', date: new Date().toISOString() };
             try { await addDoc(collection(db, "sewing_orders"), order); } catch(e){}
-            btn.innerHTML = 'تأكيد الطلب'; btn.disabled = false;
+            btn.innerHTML = window.siteState.lang==='ar'?'تأكيد الطلب':'Confirmer'; btn.disabled = false;
             closeModal('sewing-modal'); openModal('success-modal');
             setTimeout(() => { closeModal('success-modal'); }, 2000);
         };
@@ -929,20 +1012,24 @@
         };
 
         window.renderAdminProducts = () => {
-            document.getElementById('admin-products-grid').innerHTML = window.siteState.products.map(p => `
-            <div class="product-card" style="border:1px solid #ddd;">
-                <img src="${p.img}" class="product-img">
-                <div class="product-info"><strong>${p.name_ar}</strong><p>${p.price} DA | الكمية: ${p.stock}</p>
-                <div style="display:flex; justify-content:space-between; gap:5px; margin-top:5px;">
-                    <button class="btn" style="background:var(--secondary); padding:5px;" onclick="editProduct('${p.id}')">تعديل</button>
-                    <button class="btn" style="background:var(--danger); padding:5px;" onclick="deleteDoc(doc(db, 'products', '${p.id}'))">حذف</button>
-                </div>
-                </div>
-            </div>`).join('');
+            document.getElementById('admin-products-grid').innerHTML = window.siteState.products.map(p => {
+                let thumbImg = p.images && p.images.length > 0 ? p.images[0] : p.img;
+                return `
+                <div class="product-card" style="border:1px solid #ddd;">
+                    <img src="${thumbImg}" class="product-img">
+                    <div class="product-info"><strong>${p.name_ar}</strong><p>${p.price} DA | الكمية: ${p.stock}</p>
+                    <div style="display:flex; justify-content:space-between; gap:5px; margin-top:5px;">
+                        <button class="btn" style="background:var(--secondary); padding:5px;" onclick="editProduct('${p.id}')">تعديل</button>
+                        <button class="btn" style="background:var(--danger); padding:5px;" onclick="deleteDoc(doc(db, 'products', '${p.id}'))">حذف</button>
+                    </div>
+                    </div>
+                </div>`
+            }).join('');
         };
         
         window.openProductModal = () => {
             document.getElementById('prod-id').value = '';
+            document.getElementById('prod-img').value = ''; // تصفير حقل الملفات
             document.getElementById('prod-name-ar').value = '';
             document.getElementById('prod-name-fr').value = '';
             document.getElementById('prod-price').value = '';
@@ -961,6 +1048,7 @@
             const p = window.siteState.products.find(x => x.id === id);
             if(!p) return;
             document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-img').value = ''; 
             document.getElementById('prod-name-ar').value = p.name_ar || '';
             document.getElementById('prod-name-fr').value = p.name_fr || '';
             document.getElementById('prod-price').value = p.price || '';
@@ -978,10 +1066,17 @@
         window.saveProduct = async () => {
             const btn = document.getElementById('btn-save-prod'); btn.innerText="جاري الرفع..."; btn.disabled=true;
             const id = document.getElementById('prod-id').value;
-            const file = document.getElementById('prod-img').files[0];
             
-            let imgBase64 = null;
-            if(file) imgBase64 = await compressImage(file, 500); 
+            // معالجة الصور المتعددة
+            const files = document.getElementById('prod-img').files;
+            let imagesArray = [];
+            
+            if(files.length > 0) {
+                for(let i=0; i<files.length; i++) {
+                    let compressed = await compressImage(files[i], 600);
+                    imagesArray.push(compressed);
+                }
+            }
             
             const productData = {
                 name_ar: document.getElementById('prod-name-ar').value, name_fr: document.getElementById('prod-name-fr').value,
@@ -989,8 +1084,14 @@
                 category: document.getElementById('prod-category').value, sizes: document.getElementById('prod-sizes').value, colors: document.getElementById('prod-colors').value,
                 stock: parseInt(document.getElementById('prod-stock').value||0), desc: document.getElementById('prod-desc').value, featured: document.getElementById('prod-featured').checked
             };
-            if(imgBase64) productData.img = imgBase64;
-            else if(!id) productData.img = 'https://via.placeholder.com/300'; // Fallback for new
+            
+            if(imagesArray.length > 0) { 
+                productData.img = imagesArray[0]; // دعم التوافقية القديمة
+                productData.images = imagesArray;
+            } else if(!id) { 
+                productData.img = 'https://via.placeholder.com/300';
+                productData.images = ['https://via.placeholder.com/300'];
+            }
 
             if(id) { await updateDoc(doc(db, "products", id), productData); } 
             else { await addDoc(collection(db, "products"), productData); }
@@ -1005,6 +1106,7 @@
             const file = document.getElementById('banner-img').files[0]; if(!file) return alert("اختر صورة");
             const img = await compressImage(file, 600);
             await addDoc(collection(db, "banners"), { img: img, link: document.getElementById('banner-link').value });
+            document.getElementById('banner-link').value = '';
             alert("تمت الإضافة");
         };
 
