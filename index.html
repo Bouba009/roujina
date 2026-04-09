@@ -219,6 +219,28 @@
             body.printing-invoice #print-area { position: absolute; left: 0; top: 0; width: 100%; background:white; }
             body.printing-invoice .admin-sidebar, body.printing-invoice .admin-header, body.printing-invoice .no-print, body.printing-invoice .btn { display:none !important;}
         }
+
+        /* --- تأثيرات الحركة (Animations) التي طلبتها --- */
+        .category-item, .sidebar ul li, .admin-nav li { transition: all 0.3s ease; -webkit-tap-highlight-color: transparent; }
+        
+        .category-item:hover { transform: translateY(-5px) scale(1.05); }
+        .category-item:active { transform: scale(0.85); transition: transform 0.1s; }
+
+        .product-card:active { transform: scale(0.95); transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
+        .product-card:hover { transform: translateY(-5px); }
+        
+        .btn:active, .action-btn:active { transform: scale(0.9); transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
+        
+        .fab:active { transform: scale(0.9); transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
+        
+        .dash-card:active { transform: scale(0.95); transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
+        .dash-card:hover { transform: translateY(-5px); }
+        
+        .sidebar ul li:active, .admin-nav li:active { transform: scale(0.95) translateX(-10px); background-color: rgba(0,0,0,0.05); }
+        
+        .logo:active, .header-icons i:active, .slide:active { transform: scale(0.8); transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
+        /* ---------------------------------------------- */
+
     </style>
 </head>
 <body>
