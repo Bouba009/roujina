@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROUJÎNA | روجينا</title>
+    
+    <!-- كود القراءة الفورية للثيم واللوغو لتجنب ظهور اللون الافتراضي -->
+    <script>
+        try {
+            const localSettings = JSON.parse(localStorage.getItem('siteSettings'));
+            if(localSettings && localSettings.theme) {
+                document.documentElement.style.setProperty('--primary', localSettings.theme);
+            }
+        } catch(e){}
+    </script>
+
     <!-- خطوط جوجل -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <!-- مكتبات خارجية -->
@@ -37,7 +48,8 @@
         /* --- Header --- */
         header { background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; }
-        .logo { font-size: 28px; font-weight: 800; color: var(--primary); letter-spacing: 2px; }
+        .logo { font-size: 28px; font-weight: 800; color: var(--primary); letter-spacing: 2px; display:flex; align-items:center; }
+        .logo img { max-height: 40px; border-radius: 5px; }
         .search-bar { display: flex; flex: 1; margin: 0 15px; background: #f1f1f1; border-radius: 25px; padding: 5px 15px; }
         .search-bar input { border: none; background: transparent; width: 100%; outline: none; padding: 8px; font-size:14px; }
         .header-icons i { font-size: 22px; margin-left: 15px; cursor: pointer; color: var(--dark); transition: var(--transition); }
@@ -117,7 +129,7 @@
         
         #admin-panel { display: none; display: flex; height: 100vh; background: #f4f6f9; overflow: hidden; direction: rtl;}
         .admin-sidebar { width: 250px; background: var(--dark); color: white; display: flex; flex-direction: column; overflow-y: auto; transition:0.3s;}
-        .admin-logo { padding: 20px; text-align: center; font-size: 22px; font-weight: bold; border-bottom: 1px solid #34495e; color: var(--secondary); }
+        .admin-logo { padding: 20px; text-align: center; font-size: 22px; font-weight: bold; border-bottom: 1px solid #34495e; color: var(--secondary); display:flex; justify-content:center; align-items:center;}
         .admin-nav { list-style: none; padding: 0; margin: 0; }
         .admin-nav li { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #34495e; transition: 0.3s; font-size:15px;}
         .admin-nav li:hover, .admin-nav li.active { background: var(--primary); border-left: 4px solid var(--secondary); }
@@ -169,8 +181,8 @@
         /* Print Settings */
         @media print {
             body * { visibility: hidden; }
-            #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 100%; margin:0; padding:0; background:#fff;}
+            #print-area, #print-area *, #label-print-area, #label-print-area * { visibility: visible; }
+            #print-area, #label-print-area { position: absolute; left: 0; top: 0; width: 100%; margin:0; padding:0; background:#fff;}
             .no-print { display: none !important; }
             .modal { background:none; position:absolute; }
             .modal-content { box-shadow:none; width:100%; max-width:100%; padding:0;}
@@ -230,7 +242,7 @@
         <footer>
             <div class="footer-grid">
                 <div>
-                    <h2 class="logo" style="color:white;">ROUJÎNA</h2>
+                    <h2 class="logo" style="color:white;" id="footer-logo">ROUJÎNA</h2>
                     <p style="margin-top:10px; font-size:14px;" data-ar="متجرك الأول للأناقة والتصميم." data-fr="Votre boutique d'élégance.">متجرك الأول للأناقة والتصميم.</p>
                     <div class="social-icons" style="margin-top:15px;" id="footer-socials">
                         <a href="#"><i class="fab fa-instagram"></i></a>
@@ -321,7 +333,7 @@
 
     <div id="admin-panel">
         <div class="admin-sidebar" id="admin-sidebar">
-            <div class="admin-logo">Admin | ROUJÎNA</div>
+            <div class="admin-logo" id="admin-sidebar-logo">Admin | ROUJÎNA</div>
             <ul class="admin-nav">
                 <li class="active" onclick="switchAdminTab('tab-dash', this)"><i class="fas fa-tachometer-alt"></i> الداشبورد والإحصائيات</li>
                 <li onclick="switchAdminTab('tab-orders', this)"><i class="fas fa-shopping-cart"></i> الطلبيات العادية</li>
@@ -397,7 +409,7 @@
             <div id="tab-products" class="tab-section">
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                     <h3>المنتجات المنشورة</h3>
-                    <button class="btn" style="width:150px; padding:8px;" onclick="openModal('add-product-modal')">إضافة منتج +</button>
+                    <button class="btn" style="width:150px; padding:8px;" onclick="openProductModal()">إضافة منتج +</button>
                 </div>
                 <div class="products-grid" id="admin-products-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px,1fr));"></div>
             </div>
@@ -496,6 +508,9 @@
             <div id="tab-settings" class="tab-section">
                 <h3>إعدادات الموقع والنصوص</h3>
                 <div style="background:white; padding:15px; border-radius:10px; margin-top:15px;">
+                    <div class="form-row">
+                        <div><label>لوغو الموقع (صورة)</label><input type="file" id="set-logo" class="form-control" accept="image/*"></div>
+                    </div>
                     <label>Meta Pixel Code</label><textarea id="set-pixel" class="form-control" rows="2"></textarea>
                     
                     <h4 style="margin-top:15px;">النصوص والروابط</h4>
@@ -522,7 +537,8 @@
     <div class="modal" id="add-product-modal">
         <div class="modal-content">
             <i class="fas fa-times close-modal" onclick="closeModal('add-product-modal')"></i>
-            <h2 style="margin-bottom:15px;">إضافة منتج جديد</h2>
+            <h2 id="modal-product-title" style="margin-bottom:15px;">إضافة/تعديل منتج</h2>
+            <input type="hidden" id="prod-id">
             <div class="form-group"><label>صورة المنتج (تضغط آليا)</label><input type="file" id="prod-img" class="form-control" accept="image/*"></div>
             <div class="form-row">
                 <div><label>الاسم (عربي)</label><input type="text" id="prod-name-ar" class="form-control"></div>
@@ -542,21 +558,27 @@
             </div>
             <div class="form-group"><label>الوصف</label><textarea id="prod-desc" class="form-control"></textarea></div>
             <div class="form-group"><label><input type="checkbox" id="prod-featured"> منتج مميز</label></div>
-            <button class="btn" id="btn-save-prod" onclick="saveProduct()">نشر المنتج الآن</button>
+            <button class="btn" id="btn-save-prod" onclick="saveProduct()">حفظ المنتج</button>
         </div>
     </div>
 
+    <!-- ملصق الشحن المعدل -->
     <div class="modal" id="print-label-modal">
         <div class="modal-content" style="text-align:center;">
             <i class="fas fa-times close-modal" onclick="closeModal('print-label-modal')"></i>
             <div id="label-print-area" style="padding:20px; border:2px dashed #000; margin:20px auto; background:#fff; width:100%; max-width:350px;">
-                <h2 style="margin-bottom:10px; font-family:sans-serif;">ROUJÎNA</h2>
+                <h2 style="margin-bottom:10px; font-family:sans-serif; color:var(--dark);">ROUJÎNA</h2>
                 <h4 style="margin-bottom:15px;">Bon de Livraison</h4>
                 <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>ID:</strong> <span id="lbl-id"></span></p>
                 <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Client:</strong> <span id="lbl-name"></span></p>
                 <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Tél:</strong> <span id="lbl-phone"></span></p>
+                <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Produit:</strong> <span id="lbl-prodName"></span></p>
+                <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Wilaya:</strong> <span id="lbl-wilaya"></span></p>
                 <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Adresse:</strong> <span id="lbl-address"></span></p>
-                <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Total:</strong> <span id="lbl-total"></span> DA</p>
+                <hr style="margin:10px 0; border:0; border-top:1px solid #ddd;">
+                <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Prix Prod:</strong> <span id="lbl-prodPrice"></span> DA</p>
+                <p style="text-align:left; font-size:14px; margin-bottom:5px;"><strong>Livraison:</strong> <span id="lbl-shipPrice"></span> DA</p>
+                <p style="text-align:left; font-size:16px; margin-bottom:5px; font-weight:bold;"><strong>Total:</strong> <span id="lbl-total"></span> DA</p>
                 <div id="qrcode" style="margin:15px auto; width:100px;"></div>
             </div>
             <div style="display:flex; gap:10px;">
@@ -597,7 +619,7 @@
                 {id:16, name_ar:'الجزائر', name_fr:'Alger', price_desk:400, price_home:600},
                 {id:9, name_ar:'البليدة', name_fr:'Blida', price_desk:300, price_home:500}
             ],
-            settings: { whatsapp: "213540021900", about_ar: "ورشة روجينا", about_fr: "Atelier ROUJINA", priv_ar:"الخصوصية", priv_fr:"Confidentialité", theme: "#8e44ad", map:"" }
+            settings: { whatsapp: "213540021900", about_ar: "ورشة روجينا", about_fr: "Atelier ROUJINA", priv_ar:"الخصوصية", priv_fr:"Confidentialité", theme: "#8e44ad", map:"", logo:"" }
         };
 
         // UI Helpers
@@ -624,6 +646,17 @@
             if(window.siteState.settings.whatsapp) document.getElementById('whatsapp-fab').style.display = 'flex';
             if(window.siteState.settings.map) document.getElementById('map-iframe').src = window.siteState.settings.map;
             applyTheme(window.siteState.settings.theme);
+            
+            // تطبيق اللوغو
+            if(window.siteState.settings.logo) {
+                const logoHtml = `<img src="${window.siteState.settings.logo}" alt="ROUJINA">`;
+                document.getElementById('site-logo').innerHTML = logoHtml;
+                if(document.getElementById('footer-logo')) document.getElementById('footer-logo').innerHTML = logoHtml;
+                if(document.getElementById('admin-sidebar-logo')) document.getElementById('admin-sidebar-logo').innerHTML = logoHtml;
+            }
+
+            // تحديث الحفظ المحلي للثيم واللوغو
+            localStorage.setItem('siteSettings', JSON.stringify(window.siteState.settings));
         }
 
         // Router
@@ -667,41 +700,35 @@
         window.showPage = (page) => { document.getElementById('sidebar').classList.remove('active'); window.location.hash = (page==='home')?'':''; };
         window.openWhatsapp = () => window.open(`https://wa.me/${window.siteState.settings.whatsapp}`, '_blank');
 
-        // --- Firebase Realtime Listeners (The Fix for Sync issues) ---
+        // --- Firebase Realtime Listeners ---
         function setupFirebaseListeners() {
-            // Products
             onSnapshot(collection(db, "products"), (snap) => {
                 window.siteState.products = [];
                 snap.forEach(doc => window.siteState.products.push({ id: doc.id, ...doc.data() }));
                 if(window.location.hash === '' || window.location.hash.startsWith('#product')) renderFrontendProducts();
                 if(sessionStorage.getItem('adminLogged')) renderAdminProducts();
             });
-            // Banners
             onSnapshot(collection(db, "banners"), (snap) => {
                 window.siteState.banners = [];
                 snap.forEach(doc => window.siteState.banners.push({ id: doc.id, ...doc.data() }));
                 renderBanners();
                 if(sessionStorage.getItem('adminLogged')) renderAdminBanners();
             });
-            // Orders
             onSnapshot(collection(db, "orders"), (snap) => {
                 window.siteState.orders = [];
                 snap.forEach(doc => window.siteState.orders.push({ fbId: doc.id, ...doc.data() }));
                 if(sessionStorage.getItem('adminLogged')) { renderAdminOrders(); updateAdminDashboard(); }
             });
-            // Sewing
             onSnapshot(collection(db, "sewing_orders"), (snap) => {
                 window.siteState.sewingOrders = [];
                 snap.forEach(doc => window.siteState.sewingOrders.push({ fbId: doc.id, ...doc.data() }));
                 if(sessionStorage.getItem('adminLogged')) { renderAdminSewing(); updateAdminDashboard(); }
             });
-            // Accounting
             onSnapshot(collection(db, "accounting"), (snap) => {
                 window.siteState.accounting = [];
                 snap.forEach(doc => window.siteState.accounting.push({ id: doc.id, ...doc.data() }));
                 if(sessionStorage.getItem('adminLogged')) renderAccounting();
             });
-            // Settings
             onSnapshot(doc(db, "settings", "global"), (snap) => {
                 if(snap.exists()){
                     window.siteState.settings = {...window.siteState.settings, ...snap.data()};
@@ -746,16 +773,20 @@
         }
 
         window.renderFrontendProducts = (filterStr = '') => {
-            document.getElementById('products-loader').style.display = 'none';
-            let prods = window.siteState.products.filter(p => !filterStr || p.name_ar.includes(filterStr) || p.category === filterStr).sort((a,b) => (b.featured?1:0) - (a.featured?1:0));
-            if(prods.length === 0) { document.getElementById('products-grid').innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1;">لا توجد منتجات.</p>'; return; }
+            const loader = document.getElementById('products-loader');
+            if(loader) loader.style.display = 'none';
+            
+            // حماية للفلترة (Null Safety)
+            let prods = window.siteState.products.filter(p => !filterStr || (p.name_ar && p.name_ar.includes(filterStr)) || p.category === filterStr).sort((a,b) => (b.featured?1:0) - (a.featured?1:0));
+            
+            if(prods.length === 0) { document.getElementById('products-grid').innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1;">لا توجد منتجات حالياً.</p>'; return; }
             
             document.getElementById('products-grid').innerHTML = prods.map(p => `
                 <div class="product-card" onclick="window.location.hash='#product-${p.id}'">
                     ${p.featured ? `<div class="badge-featured">${window.siteState.lang==='ar'?'مميز':'Spécial'}</div>` : ''}
                     <img src="${p.img}" class="product-img">
                     <div class="product-info">
-                        <div class="product-title">${window.siteState.lang === 'ar' ? p.name_ar : p.name_fr}</div>
+                        <div class="product-title">${window.siteState.lang === 'ar' ? (p.name_ar||'') : (p.name_fr||'')}</div>
                         <div>${p.oldPrice ? `<span class="old-price">${p.oldPrice} DA</span>` : ''} <span class="product-price">${p.price} DA</span></div>
                     </div>
                 </div>`).join('');
@@ -770,7 +801,6 @@
             const name = window.siteState.lang === 'ar' ? p.name_ar : p.name_fr;
             let wilayasOpts = '<option value="">-- اختر --</option>' + window.siteState.wilayas.map(w => `<option value="${w.id}" data-desk="${w.price_desk}" data-home="${w.price_home}">${w.id} - ${window.siteState.lang==='ar'?w.name_ar:w.name_fr}</option>`).join('');
             
-            // Sizes & Colors Options
             let sizesHtml = p.sizes ? `<div class="form-group"><label>المقاس:</label><select id="chk-size" class="form-control">${p.sizes.split(',').map(s=>`<option value="${s.trim()}">${s.trim()}</option>`).join('')}</select></div>` : '';
             let colorsHtml = p.colors ? `<div class="form-group"><label>اللون:</label><select id="chk-color" class="form-control">${p.colors.split(',').map(c=>`<option value="${c.trim()}">${c.trim()}</option>`).join('')}</select></div>` : '';
 
@@ -779,7 +809,7 @@
                 <div class="details-info">
                     <h1 style="color:var(--primary); margin-bottom:10px;">${name}</h1>
                     <p style="font-size:22px; font-weight:bold; margin-bottom:10px;">${p.price} DA</p>
-                    <p style="color:#555; line-height:1.6; margin-bottom:15px;">${p.desc}</p>
+                    <p style="color:#555; line-height:1.6; margin-bottom:15px;">${p.desc||''}</p>
                     <div class="order-form">
                         <h3 style="margin-bottom:15px; border-bottom:2px solid var(--primary); padding-bottom:5px;">استمارة الطلب</h3>
                         ${sizesHtml} ${colorsHtml}
@@ -814,7 +844,16 @@
             const color = document.getElementById('chk-color') ? document.getElementById('chk-color').value : '';
             if(!name || !phone || !wilaya.value || !address) return alert("يرجى ملء جميع الحقول");
 
-            const order = { id: 'O-'+Date.now().toString().slice(-6), type: 'product', prodName: `${prodName} ${size?`(${size})`:''} ${color?`[${color}]`:''}`, customer: name, phone: phone, wilaya: wilaya.options[wilaya.selectedIndex].text, address: address, total: document.getElementById('chk-total-price').innerText, status: 'pending', date: new Date().toISOString() };
+            const shipPrice = document.getElementById('chk-shipping-price').innerText;
+            const total = document.getElementById('chk-total-price').innerText;
+
+            const order = { 
+                id: 'O-'+Date.now().toString().slice(-6), type: 'product', 
+                prodName: `${prodName} ${size?`(${size})`:''} ${color?`[${color}]`:''}`, 
+                customer: name, phone: phone, wilaya: wilaya.options[wilaya.selectedIndex].text, 
+                address: address, total: total, prodPrice: prodPrice, shipPrice: shipPrice,
+                status: 'pending', date: new Date().toISOString() 
+            };
             try { await addDoc(collection(db, "orders"), order); } catch(e){ alert("حدث خطأ في الإرسال"); return;}
             openModal('success-modal');
             setTimeout(() => { closeModal('success-modal'); window.location.hash = ''; }, 2000);
@@ -862,20 +901,21 @@
             document.getElementById('stat-canc-orders').innerText = o.filter(x=>x.status==='cancelled').length;
             document.getElementById('stat-sewing').innerText = window.siteState.sewingOrders.length;
             
-            // Chart update
-            if(window.chartInst) window.chartInst.destroy();
-            window.chartInst = new Chart(document.getElementById('salesChart').getContext('2d'), {
-                type: 'doughnut',
-                data: { labels: ['مؤكدة', 'قيد المراجعة', 'ملغية'], datasets: [{ data: [o.filter(x=>x.status==='confirmed').length, o.filter(x=>x.status==='pending').length, o.filter(x=>x.status==='cancelled').length], backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'] }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+            try {
+                if(window.chartInst) window.chartInst.destroy();
+                window.chartInst = new Chart(document.getElementById('salesChart').getContext('2d'), {
+                    type: 'doughnut',
+                    data: { labels: ['مؤكدة', 'قيد المراجعة', 'ملغية'], datasets: [{ data: [o.filter(x=>x.status==='confirmed').length, o.filter(x=>x.status==='pending').length, o.filter(x=>x.status==='cancelled').length], backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'] }] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            } catch(e) { console.log('Chart update handled silently.'); }
         }
 
         window.renderAdminOrders = () => {
             document.getElementById('orders-tbody').innerHTML = window.siteState.orders.slice().reverse().map(o => `<tr>
                 <td>${o.id}</td><td>${o.prodName}</td><td>${o.customer}<br>${o.phone}</td><td>${o.wilaya}<br>${o.address}</td><td>${o.total}</td>
                 <td><select onchange="changeOrderStatus('${o.fbId}', this.value)" class="status-badge ${o.status==='confirmed'?'status-confirmed':(o.status==='cancelled'?'status-cancelled':'status-pending')}"><option value="pending" ${o.status==='pending'?'selected':''}>مراجعة</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>مؤكد</option><option value="cancelled" ${o.status==='cancelled'?'selected':''}>ملغى</option></select></td>
-                <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.address}', '${o.total}')"><i class="fas fa-print"></i></button></td>
+                <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.wilaya}', '${o.address}', '${o.total}', '${o.prodName}', '${o.prodPrice||'0'}', '${o.shipPrice||'0'}')"><i class="fas fa-print"></i></button></td>
             </tr>`).join('');
         };
         window.changeOrderStatus = async (fbId, newStatus) => { await updateDoc(doc(db, "orders", fbId), { status: newStatus }); };
@@ -883,7 +923,7 @@
         window.renderAdminSewing = () => {
             document.getElementById('sewing-tbody').innerHTML = window.siteState.sewingOrders.slice().reverse().map(o => `<tr>
                 <td>${o.id}</td><td>${o.img?`<img src="${o.img}" style="width:40px; border-radius:5px;">`:'-'}</td><td>${o.desc}</td><td>${o.customer}<br>${o.phone}</td><td>${o.wilaya}</td>
-                <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.wilaya}', 'غير محدد')"><i class="fas fa-print"></i></button>
+                <td><button class="action-btn" style="background:#34495e;" onclick="generateQRLabel('${o.id}', '${o.customer}', '${o.phone}', '${o.wilaya}', '-', '-', 'طلب خياطة', '-', '-')"><i class="fas fa-print"></i></button>
                 <button class="action-btn" style="background:var(--danger);" onclick="deleteDoc(doc(db, 'sewing_orders', '${o.fbId}'))"><i class="fas fa-trash"></i></button></td>
             </tr>`).join('');
         };
@@ -893,22 +933,69 @@
             <div class="product-card" style="border:1px solid #ddd;">
                 <img src="${p.img}" class="product-img">
                 <div class="product-info"><strong>${p.name_ar}</strong><p>${p.price} DA | الكمية: ${p.stock}</p>
-                <button class="btn" style="background:var(--danger); padding:5px; margin-top:5px;" onclick="deleteDoc(doc(db, 'products', '${p.id}'))">حذف</button></div>
+                <div style="display:flex; justify-content:space-between; gap:5px; margin-top:5px;">
+                    <button class="btn" style="background:var(--secondary); padding:5px;" onclick="editProduct('${p.id}')">تعديل</button>
+                    <button class="btn" style="background:var(--danger); padding:5px;" onclick="deleteDoc(doc(db, 'products', '${p.id}'))">حذف</button>
+                </div>
+                </div>
             </div>`).join('');
         };
+        
+        window.openProductModal = () => {
+            document.getElementById('prod-id').value = '';
+            document.getElementById('prod-name-ar').value = '';
+            document.getElementById('prod-name-fr').value = '';
+            document.getElementById('prod-price').value = '';
+            document.getElementById('prod-old-price').value = '';
+            document.getElementById('prod-category').value = 'ملابس نسائية';
+            document.getElementById('prod-sizes').value = '';
+            document.getElementById('prod-colors').value = '';
+            document.getElementById('prod-stock').value = '10';
+            document.getElementById('prod-desc').value = '';
+            document.getElementById('prod-featured').checked = false;
+            document.getElementById('btn-save-prod').innerText = 'حفظ المنتج';
+            openModal('add-product-modal');
+        };
+
+        window.editProduct = (id) => {
+            const p = window.siteState.products.find(x => x.id === id);
+            if(!p) return;
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-name-ar').value = p.name_ar || '';
+            document.getElementById('prod-name-fr').value = p.name_fr || '';
+            document.getElementById('prod-price').value = p.price || '';
+            document.getElementById('prod-old-price').value = p.oldPrice || '';
+            document.getElementById('prod-category').value = p.category || 'اخرى';
+            document.getElementById('prod-sizes').value = p.sizes || '';
+            document.getElementById('prod-colors').value = p.colors || '';
+            document.getElementById('prod-stock').value = p.stock || '0';
+            document.getElementById('prod-desc').value = p.desc || '';
+            document.getElementById('prod-featured').checked = p.featured || false;
+            document.getElementById('btn-save-prod').innerText = 'تحديث المنتج';
+            openModal('add-product-modal');
+        };
+
         window.saveProduct = async () => {
             const btn = document.getElementById('btn-save-prod'); btn.innerText="جاري الرفع..."; btn.disabled=true;
+            const id = document.getElementById('prod-id').value;
             const file = document.getElementById('prod-img').files[0];
-            let imgBase64 = 'https://via.placeholder.com/300';
-            if(file) imgBase64 = await compressImage(file, 500); // 500px to ensure base64 is small enough for Firestore
             
-            await addDoc(collection(db, "products"), {
-                img: imgBase64, name_ar: document.getElementById('prod-name-ar').value, name_fr: document.getElementById('prod-name-fr').value,
+            let imgBase64 = null;
+            if(file) imgBase64 = await compressImage(file, 500); 
+            
+            const productData = {
+                name_ar: document.getElementById('prod-name-ar').value, name_fr: document.getElementById('prod-name-fr').value,
                 price: parseInt(document.getElementById('prod-price').value||0), oldPrice: document.getElementById('prod-old-price').value,
                 category: document.getElementById('prod-category').value, sizes: document.getElementById('prod-sizes').value, colors: document.getElementById('prod-colors').value,
                 stock: parseInt(document.getElementById('prod-stock').value||0), desc: document.getElementById('prod-desc').value, featured: document.getElementById('prod-featured').checked
-            });
-            closeModal('add-product-modal'); btn.innerText="نشر المنتج الآن"; btn.disabled=false; document.getElementById('prod-name-ar').value='';
+            };
+            if(imgBase64) productData.img = imgBase64;
+            else if(!id) productData.img = 'https://via.placeholder.com/300'; // Fallback for new
+
+            if(id) { await updateDoc(doc(db, "products", id), productData); } 
+            else { await addDoc(collection(db, "products"), productData); }
+
+            closeModal('add-product-modal'); btn.innerText="حفظ المنتج"; btn.disabled=false;
         };
 
         window.renderAdminBanners = () => {
@@ -925,6 +1012,7 @@
             document.documentElement.style.setProperty('--primary', color);
             window.siteState.settings.theme = color;
             await setDoc(doc(db, "settings", "global"), { theme: color }, {merge:true});
+            localStorage.setItem('siteSettings', JSON.stringify(window.siteState.settings));
         };
 
         // Accounting
@@ -962,12 +1050,19 @@
         function loadLocalWilayas() { const w = localStorage.getItem('wilayasData'); if(w) window.siteState.wilayas = JSON.parse(w); }
 
         window.saveSettings = async () => {
-            await setDoc(doc(db, "settings", "global"), {
+            let logoBase64 = null;
+            const logoFile = document.getElementById('set-logo').files[0];
+            if (logoFile) logoBase64 = await compressImage(logoFile, 300);
+
+            const updates = {
                 about_ar: document.getElementById('set-about-ar').value, about_fr: document.getElementById('set-about-fr').value,
                 priv_ar: document.getElementById('set-priv-ar').value, priv_fr: document.getElementById('set-priv-fr').value,
                 whatsapp: document.getElementById('set-whatsapp').value, map: document.getElementById('set-map').value
-            }, {merge:true});
-            alert("تم حفظ الإعدادات سحابياً");
+            };
+            if(logoBase64) updates.logo = logoBase64;
+
+            await setDoc(doc(db, "settings", "global"), updates, {merge:true});
+            alert("تم حفظ الإعدادات سحابياً بنجاح");
         };
 
         // Invoice Helpers
@@ -995,21 +1090,29 @@
                         if (w > maxSize) { h *= maxSize / w; w = maxSize; }
                         canvas.width = w; canvas.height = h;
                         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6)); // ضغط الجودة لـ 60% لتجنب تجاوز حجم وثيقة Firebase
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
                     };
                 };
             });
         }
 
-        window.generateQRLabel = (id, name, phone, address, total) => {
-            document.getElementById('lbl-id').innerText = id; document.getElementById('lbl-name').innerText = name; document.getElementById('lbl-phone').innerText = phone; document.getElementById('lbl-address').innerText = address; document.getElementById('lbl-total').innerText = total;
+        window.generateQRLabel = (id, name, phone, wilaya, address, total, prodName, prodPrice, shipPrice) => {
+            document.getElementById('lbl-id').innerText = id; 
+            document.getElementById('lbl-name').innerText = name; 
+            document.getElementById('lbl-phone').innerText = phone; 
+            document.getElementById('lbl-wilaya').innerText = wilaya;
+            document.getElementById('lbl-address').innerText = address;
+            document.getElementById('lbl-prodName').innerText = prodName;
+            document.getElementById('lbl-prodPrice').innerText = prodPrice;
+            document.getElementById('lbl-shipPrice').innerText = shipPrice;
+            document.getElementById('lbl-total').innerText = total;
+
             document.getElementById('qrcode').innerHTML = '';
             new QRCode(document.getElementById("qrcode"), { text: `${id}|${name}|${phone}|${total}DA`, width: 100, height: 100 });
             openModal('print-label-modal');
         };
         window.printElement = (id) => { window.print(); };
         
-        // استخدام مكتبة html2pdf لتحميل الـ PDF
         window.downloadPDF = (elemId, filename) => {
             const element = document.getElementById(elemId);
             const opt = { margin: 0.5, filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
