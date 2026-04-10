@@ -1193,12 +1193,27 @@
 
         window.renderAdminSewing = () => {
             document.getElementById('sewing-tbody').innerHTML = window.siteState.sewingOrders.slice().reverse().map(o => `<tr>
-                <td>${o.id}</td><td>${o.img?`<img src="${o.img}" style="width:40px; border-radius:5px;">`:'-'}</td><td>${o.desc}</td><td>${o.customer}<br>${o.phone}</td><td>${o.wilaya}</td>
+                <td>${o.id}</td>
+                <td style="text-align:center;">${o.img?`<img src="${o.img}" style="width:120px; height:auto; max-height:150px; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.1); display:block; margin:0 auto;"><a href="${o.img}" download="Design_${o.id}.jpg" class="action-btn" style="background:var(--primary); display:inline-block; margin-top:8px; text-decoration:none;"><i class="fas fa-download"></i> تحميل الصورة</a>`:'-'}</td>
+                <td style="white-space: pre-wrap;">${o.desc}</td>
+                <td>${o.customer}<br>${o.phone}</td><td>${o.wilaya}</td>
                 <td>
-                    <button class="action-btn" style="background:#34495e;" onclick="window.openSewingLabelModalSafe('${o.fbId}')"><i class="fas fa-print"></i></button>
-                    <button class="action-btn" style="background:var(--danger);" onclick="window.deleteSewingOrder('${o.fbId}')"><i class="fas fa-trash"></i></button>
+                    <button class="action-btn" style="background:#27ae60;" onclick="window.downloadSewingTXT('${o.fbId}')" title="تحميل تفاصيل الطلب"><i class="fas fa-file-alt"></i></button>
+                    <button class="action-btn" style="background:#34495e;" onclick="window.openSewingLabelModalSafe('${o.fbId}')" title="طباعة"><i class="fas fa-print"></i></button>
+                    <button class="action-btn" style="background:var(--danger);" onclick="window.deleteSewingOrder('${o.fbId}')" title="حذف"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>`).join('');
+        };
+
+        window.downloadSewingTXT = (fbId) => {
+            const o = window.siteState.sewingOrders.find(x => x.fbId === fbId);
+            if(!o) return;
+            const content = `--- تفاصيل طلب تصميم وخياطة ---\nرقم الطلب: ${o.id}\nتاريخ الطلب: ${new Date(o.date).toLocaleString('ar-DZ')}\n\n[معلومات الزبون]\nالاسم: ${o.customer}\nرقم الهاتف: ${o.phone}\nالولاية: ${o.wilaya}\n\n[تفاصيل ومقاسات الطلب]\n${o.desc}`;
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Order_${o.id}.txt`;
+            link.click();
         };
 
         // Export Orders to CSV
