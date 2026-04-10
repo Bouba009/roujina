@@ -1071,8 +1071,18 @@
 
         // Sewing Logic
         function populateWilayasSelect() {
-            document.getElementById('sewing-wilaya').innerHTML = '<option value="">-- اختر الولاية --</option>' + window.siteState.wilayas.map(w => `<option value="${w.name_ar}">${w.id} - ${w.name_ar}</option>`).join('');
+            const sewWilaya = document.getElementById('sewing-wilaya');
+            if(sewWilaya) {
+                sewWilaya.innerHTML = '<option value="">-- اختر الولاية --</option>' + window.siteState.wilayas.map(w => `<option value="${w.name_ar}">${w.id} - ${w.name_ar}</option>`).join('');
+            }
+            const chkWilaya = document.getElementById('chk-wilaya');
+            if(chkWilaya) {
+                const currentVal = chkWilaya.value;
+                chkWilaya.innerHTML = `<option value="">-- ${window.siteState.lang==='ar'?'اختر':'Choisir'} --</option>` + window.siteState.wilayas.map(w => `<option value="${w.id}" data-desk="${w.price_desk}" data-home="${w.price_home}">${w.id} - ${window.siteState.lang==='ar'?w.name_ar:w.name_fr}</option>`).join('');
+                chkWilaya.value = currentVal;
+            }
         }
+        
         window.submitSewingOrder = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('sewing-submit-btn'); btn.innerHTML = 'جاري الإرسال...'; btn.disabled = true;
