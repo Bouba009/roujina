@@ -397,7 +397,7 @@
             <div class="admin-logo" id="admin-sidebar-logo">Admin | ROUJÎNA</div>
             <ul class="admin-nav">
                 <li class="active" onclick="switchAdminTab('tab-dash', this)"><i class="fas fa-tachometer-alt"></i> الداشبورد والإحصائيات</li>
-                <li onclick="switchAdminTab('tab-orders', this)"><i class="fas fa-shopping-cart"></i> الطلبيات العادية</li>
+                <li onclick="window.currentOrderFilter='all'; switchAdminTab('tab-orders', this); if(window.renderAdminOrders) window.renderAdminOrders();"><i class="fas fa-shopping-cart"></i> الطلبيات العادية</li>
                 <li onclick="switchAdminTab('tab-sewing', this)"><i class="fas fa-cut"></i> طلبات التصميم</li>
                 <li onclick="switchAdminTab('tab-products', this)"><i class="fas fa-box-open"></i> إدارة المنتجات</li>
                 <li onclick="switchAdminTab('tab-categories', this)"><i class="fas fa-tags"></i> إدارة الفئات</li>
@@ -419,7 +419,7 @@
 
             <div id="tab-dash" class="tab-section active">
                 <div class="dashboard-cards">
-                    <div class="dash-card c-blue" onclick="switchAdminTab('tab-orders', document.querySelectorAll('.admin-nav li')[1])">
+                    <div class="dash-card c-blue" onclick="window.currentOrderFilter='pending'; switchAdminTab('tab-orders', document.querySelectorAll('.admin-nav li')[1]); if(window.renderAdminOrders) window.renderAdminOrders();">
                         <h3 id="stat-new-orders">0</h3><p>طلبات جديدة</p>
                     </div>
                     <div class="dash-card c-green">
@@ -1171,7 +1171,17 @@
 
         // ترتيب جدول الطلبات وجعله منظماً
         window.renderAdminOrders = () => {
-            document.getElementById('orders-tbody').innerHTML = window.siteState.orders.slice().reverse().map(o => `
+            let ordersToDisplay = window.siteState.orders.slice();
+            
+            // فلترة الطلبات الجديدة فقط إذا تم تحديد ذلك
+            if (window.currentOrderFilter === 'pending') {
+                ordersToDisplay = ordersToDisplay.filter(o => o.status === 'pending');
+            }
+            
+            // ترتيب الطلبات: الجديدة في الأعلى والقديمة في الأسفل
+            ordersToDisplay.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            document.getElementById('orders-tbody').innerHTML = ordersToDisplay.map(o => `
             <tr>
                 <td><input type="checkbox" class="order-check" value="${o.fbId}"></td>
                 <td><strong style="color:var(--primary); font-size:16px;">${o.id}</strong><br><span style="color:#777; font-size:12px;">${new Date(o.date).toLocaleDateString('ar-DZ')}</span></td>
@@ -1392,7 +1402,7 @@
         };
         window.addBanner = async () => {
             const file = document.getElementById('banner-img').files[0]; if(!file) return alert("اختر صورة");
-            const img = await compressImage(file, 1920, 0.9); // تم الرفع لجودة 1920 وبدقة 90%
+            const img = await compressImage(file, 600);
             await addDoc(collection(db, "banners"), { img: img, link: document.getElementById('banner-link').value });
             document.getElementById('banner-link').value = '';
             alert("تمت الإضافة");
@@ -1474,7 +1484,7 @@
         };
 
         // Utils (Compression, PDF, Print)
-        function compressImage(file, maxSize, quality = 0.6) {
+        function compressImage(file, maxSize) {
             return new Promise((resolve) => {
                 const reader = new FileReader(); reader.readAsDataURL(file);
                 reader.onload = (e) => {
@@ -1484,7 +1494,7 @@
                         if (w > maxSize) { h *= maxSize / w; w = maxSize; }
                         canvas.width = w; canvas.height = h;
                         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        resolve(canvas.toDataURL('image/jpeg', quality));
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
                     };
                 };
             });
