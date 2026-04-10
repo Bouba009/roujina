@@ -1392,7 +1392,7 @@
         };
         window.addBanner = async () => {
             const file = document.getElementById('banner-img').files[0]; if(!file) return alert("اختر صورة");
-            const img = await compressImage(file, 600);
+            const img = await compressImage(file, 1920, 0.9); // تم الرفع لجودة 1920 وبدقة 90%
             await addDoc(collection(db, "banners"), { img: img, link: document.getElementById('banner-link').value });
             document.getElementById('banner-link').value = '';
             alert("تمت الإضافة");
@@ -1474,7 +1474,7 @@
         };
 
         // Utils (Compression, PDF, Print)
-        function compressImage(file, maxSize) {
+        function compressImage(file, maxSize, quality = 0.6) {
             return new Promise((resolve) => {
                 const reader = new FileReader(); reader.readAsDataURL(file);
                 reader.onload = (e) => {
@@ -1484,7 +1484,7 @@
                         if (w > maxSize) { h *= maxSize / w; w = maxSize; }
                         canvas.width = w; canvas.height = h;
                         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        resolve(canvas.toDataURL('image/jpeg', quality));
                     };
                 };
             });
