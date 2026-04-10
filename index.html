@@ -830,7 +830,8 @@
             onSnapshot(collection(db, "products"), (snap) => {
                 window.siteState.products = [];
                 snap.forEach(doc => window.siteState.products.push({ ...doc.data(), id: doc.id }));
-                if(window.location.hash === '' || window.location.hash.startsWith('#product')) renderFrontendProducts();
+                if(window.location.hash === '') renderFrontendProducts();
+                else if(window.location.hash.startsWith('#product-')) renderProductDetails(window.location.hash.replace('#product-', ''));
                 if(sessionStorage.getItem('adminLogged')) renderAdminProducts();
             });
             onSnapshot(collection(db, "banners"), (snap) => {
@@ -943,8 +944,13 @@
 
         // Product Details & Checkout Form
         function renderProductDetails(id) {
+            if(window.siteState.products.length === 0) {
+                document.getElementById('single-product-container').innerHTML = '<div class="loader" style="display: block; margin: 50px auto;"></div>';
+                return;
+            }
             const p = window.siteState.products.find(x => x.id === id);
             if(!p) { window.location.hash=''; return; }
+            
             const name = window.siteState.lang === 'ar' ? p.name_ar : p.name_fr;
             let wilayasOpts = `<option value="">-- ${window.siteState.lang==='ar'?'اختر':'Choisir'} --</option>` + window.siteState.wilayas.map(w => `<option value="${w.id}" data-desk="${w.price_desk}" data-home="${w.price_home}">${w.id} - ${window.siteState.lang==='ar'?w.name_ar:w.name_fr}</option>`).join('');
             
